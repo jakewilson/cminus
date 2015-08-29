@@ -1,9 +1,11 @@
+require_relative 'scanner.rb'
+
 class Compiler
 
     @@input = nil
 
     def initialize
-        @@input = File.open($0, 'r')
+        @@input = File.open(ARGV[0], 'r')
     end
 
     def input
@@ -13,6 +15,5 @@ class Compiler
 end
 
 c = Compiler.new
-c.input.each_line do |line|
-    puts line
-end
+s = Scanner.new
+s.getTokenType(c.input)
