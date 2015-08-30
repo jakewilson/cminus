@@ -9,5 +9,8 @@ require_relative 'types.rb'
 
 input = File.open(ARGV[0], 'r')
 
-while Scanner.getTokenType(input) != TokenType::EOF
+while (ret = Scanner.getTokenType(input)) != TokenType::EOF
+    if ret == TokenType::ERROR
+        puts "error"
+    end
 end
