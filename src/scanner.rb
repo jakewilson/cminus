@@ -1,44 +1,10 @@
-class TokenType
-    ID             = 0
-    NUM            = 1
-    ELSE           = 2
-    IF             = 3
-    INT            = 4
-    RETURN         = 5
-    VOID           = 6
-    WHILE          = 7
-    FLOAT          = 8
-    PLUS           = 9
-    MINUS          = 10
-    TIMES          = 11
-    DIVIDE         = 12
-    LT             = 13
-    LTE            = 14
-    GT             = 15
-    GTE            = 16
-    IS_EQUAL       = 17
-    NOT_EQUAL      = 18
-    ASSIGN         = 19
-    SEMICOLON      = 20
-    COMMA          = 21
-    LEFT_PAREN     = 22
-    RIGHT_PAREN    = 23
-    LEFT_BRACE     = 24
-    RIGHT_BRACE    = 25
-    LEFT_BRACKET   = 26
-    RIGHT_BRACKET  = 27
-    BLK_CMNT_BEG   = 28
-    END_CMNT_END   = 29
-    EOF            = 30
-end
+# scanner.rb
+#
+# Author: Jake Wilson
+# Date: 08/29/15
+#
 
-class State
-    START   = 0
-    IN_ID   = 1
-    IN_NUM  = 2
-    DONE    = 3
-end
-
+require_relative 'types.rb'
 
 class Scanner
 
@@ -74,7 +40,73 @@ class Scanner
             puts num
             return TokenType::NUM
 
-            
+        else # special symbols
+            ret = ""
+            case char
+                when '+'
+                    ret = TokenType::PLUS
+                when '-'
+                    ret = TokenType::MINUS
+                when '*'
+                    
+                    # TODO */
+                when '/'
+                    # TODO // and /*
+                when '<'
+                    ret = TokenType::LT
+                    if input.getc == '='
+                        ret = TokenType::LTE
+                        puts '<='
+                    else
+                        puts '<'
+                        input.seek(-1, IO::SEEK_CUR)
+                    end
+                when '>'
+                    ret = TokenType::GT
+                    if input.getc == '='
+                        ret = TokenType::GTE
+                        puts '>='
+                    else
+                        puts '>'
+                        input.seek(-1, IO::SEEK_CUR)
+                    end
+                when '='
+                    ret = TokenType::ASSIGN
+                    if input.getc == '='
+                        ret = TokenType::IS_EQUAL
+                        puts '=='
+                    else
+                        puts '='
+                        input.seek(-1, IO::SEEK_CUR)
+                    end
+                when '!'
+                    if input.getc == '='
+                        ret = TokenType::NOT_EQUAL
+                        puts '!='
+                    else
+                        ret = TokenType::ERROR
+                    end
+                when ';'
+                    ret = TokenType::SEMICOLON
+                when ','
+                    ret = TokenType::COMMA
+                when '['
+                    ret = TokenType::LEFT_BRACKET
+                when ']'
+                    ret = TokenType::RIGHT_BRACKET
+                when '{'
+                    ret = TokenType::LEFT_BRACE
+                when '}'
+                    ret = TokenType::RIGHT_BRACE
+                when '('
+                    ret = TokenType::LEFT_PAREN
+                    puts char
+                when ')'
+                    ret = TokenType::RIGHT_PAREN
+                    puts char
+                else
+                    return TokenType::EOF
+            end
         end
 
     end # end def
