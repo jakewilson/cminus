@@ -47,12 +47,15 @@ class Scanner
                 case char
                     when '+'
                         ret = TokenType::PLUS
+                        puts '+'
 
                     when '-'
                         ret = TokenType::MINUS
+                        puts '-'
 
                     when '*'
                         ret = TokenType::TIMES
+                        puts '*'
 
                     when '/'
                         comment = 0
@@ -64,10 +67,14 @@ class Scanner
                                 if char == '*'
                                     if input.getc == '/'
                                         comment -= 1
+                                    else
+                                        input.seek(-1, IO::SEEK_CUR)
                                     end
                                 elsif char == '/'
                                     if input.getc == '*'
                                         comment += 1
+                                    else
+                                        input.seek(-1, IO::SEEK_CUR)
                                     end
                                 end
                             end
@@ -78,6 +85,8 @@ class Scanner
                             done = false
                         else
                             ret = TokenType::DIVIDE
+                            input.seek(-1, IO::SEEK_CUR)
+                            puts '/'
                         end
 
                     when '<'
@@ -121,21 +130,27 @@ class Scanner
 
                     when ';'
                         ret = TokenType::SEMICOLON
+                        puts ';'
 
                     when ','
                         ret = TokenType::COMMA
+                        puts ','
 
                     when '['
                         ret = TokenType::LEFT_BRACKET
+                        puts '['
 
                     when ']'
                         ret = TokenType::RIGHT_BRACKET
+                        puts ']'
 
                     when '{'
                         ret = TokenType::LEFT_BRACE
+                        puts '{'
 
                     when '}'
                         ret = TokenType::RIGHT_BRACE
+                        puts '}'
 
                     when '('
                         ret = TokenType::LEFT_PAREN
