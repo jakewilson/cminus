@@ -29,8 +29,12 @@ class Scanner
     
                 # make sure not to consume the next character
                 input.seek(-1, IO::SEEK_CUR)
-                puts id
                 ret = TokenType::ID
+                if is_keyword(id)
+                    ret = TokenType::KEYWORD
+                    print "keyword: "
+                end
+                puts id
 
             elsif char =~ /[0-9]/ # is digit
                 num = char
@@ -171,5 +175,13 @@ class Scanner
         end
         return ret
     end # end def
+
+    def self.is_keyword(id)
+        case id
+        when "else", "if", "int", "void", "return", "while", "float"
+            return true
+        end
+        return false
+    end
 
 end

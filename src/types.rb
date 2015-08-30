@@ -6,13 +6,14 @@
 class TokenType
     ID             = 0
     NUM            = 1
-    ELSE           = 2
-    IF             = 3
-    INT            = 4
-    RETURN         = 5
-    VOID           = 6
-    WHILE          = 7
-    FLOAT          = 8
+#    ELSE           = 2
+#    IF             = 3
+#    INT            = 4
+#    RETURN         = 5
+#    VOID           = 6
+#    WHILE          = 7
+#    FLOAT          = 8
+    KEYWORD        = 8
     PLUS           = 9
     MINUS          = 10
     TIMES          = 11
@@ -36,12 +37,5 @@ class TokenType
     END_CMNT_END   = 29
     EOF            = 30
     ERROR          = 31
-end
-
-class State
-    START   = 0
-    IN_ID   = 1
-    IN_NUM  = 2
-    DONE    = 3
 end
 
