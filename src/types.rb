@@ -6,6 +6,7 @@
 class TokenType
     ID             = 0
     NUM            = 1
+    FLOAT          = 2
 #    ELSE           = 2
 #    IF             = 3
 #    INT            = 4

@@ -42,10 +42,52 @@ class Scanner
                     num += char
                 end
 
+                float = ''
+                if char == '.'
+                    float = num
+                    float += '.'
+                    if (char = input.getc) =~ /[0-9]/
+                        float += char
+                        while (char = input.getc) =~ /[0-9]/
+                            float += char
+                        end
+                    else
+                        return TokenType::ERROR
+                    end
+                end
+
+                if char == 'E'
+                    if float != ''
+                        float += 'E'
+                    else
+                        float = num + 'E'
+                    end
+
+                    char = input.getc
+                    if char == '+' || char == '-'
+                        float += char
+                        char = input.getc
+                    end
+
+                    if char =~ /[0-9]/
+                        float += char
+                        while (char = input.getc) =~ /[0-9]/
+                            float += char
+                        end
+                    else
+                        return TokenType::ERROR
+                    end
+                end
+
                 # make sure not to consume the next character
                 input.seek(-1, IO::SEEK_CUR)
-                puts num
-                ret = TokenType::NUM
+                if float != ''
+                    puts float
+                    ret = TokenType::FLOAT
+                else
+                    puts num
+                    ret = TokenType::NUM
+                end
 
             else # special symbols
                 case char
