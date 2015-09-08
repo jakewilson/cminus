@@ -8,6 +8,9 @@ require_relative 'types.rb'
 
 class Scanner
 
+    # TODO: delete this after p1 has been turned in
+    @@entire_file
+
     def self.getTokenType(input)
         done = true
         ret  = TokenType::ERROR
@@ -17,7 +20,19 @@ class Scanner
 
             # eat up all whitespace before anything else
             if char =~ /\s/
+                if char == "\n"
+                    input.lineno += 1
+                    if entire_file[input.lineno] != nil
+                        puts "INPUT: " + entire_file[input.lineno]
+                    end
+                end
                 while (char = input.getc) =~ /\s/
+                    if char == "\n"
+                        input.lineno += 1
+                        if entire_file[input.lineno] != nil
+                            puts "INPUT: " + entire_file[input.lineno]
+                        end
+                    end
                 end
             end
 
@@ -75,6 +90,7 @@ class Scanner
                             float += char
                         end
                     else
+                        input.seek(-1, IO::SEEK_CUR)
                         return TokenType::ERROR
                     end
                 end
@@ -121,6 +137,11 @@ class Scanner
                                         comment += 1
                                     else
                                         input.seek(-1, IO::SEEK_CUR)
+                                    end
+                                elsif char == "\n"
+                                    input.lineno += 1
+                                    if entire_file[input.lineno] != nil
+                                        puts "INPUT: " + entire_file[input.lineno]
                                     end
                                 end
                             end
@@ -226,4 +247,19 @@ class Scanner
         return false
     end
 
+    def entire_file
+        @@entire_file
+    end
+
+    def entire_file=file
+        @@entire_file = file
+    end
+
+    def self.entire_file
+        @@entire_file
+    end
+
+    def self.entire_file=file
+        @@entire_file = file
+    end
 end
