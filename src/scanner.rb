@@ -48,6 +48,8 @@ class Scanner
                 if is_keyword(id)
                     ret = TokenType::KEYWORD
                     print "keyword: "
+                else 
+                    print "ID: "
                 end
                 puts id
 
@@ -67,6 +69,8 @@ class Scanner
                             float += char
                         end
                     else
+                        puts "error: " + float
+                        input.seek(-1, IO::SEEK_CUR)
                         return TokenType::ERROR
                     end
                 end
@@ -90,6 +94,7 @@ class Scanner
                             float += char
                         end
                     else
+                        puts "error: " + float
                         input.seek(-1, IO::SEEK_CUR)
                         return TokenType::ERROR
                     end
@@ -98,10 +103,10 @@ class Scanner
                 # make sure not to consume the next character
                 input.seek(-1, IO::SEEK_CUR)
                 if float != ''
-                    puts float
+                    puts "FLOAT: " + float
                     ret = TokenType::FLOAT
                 else
-                    puts num
+                    puts "NUM: " + num
                     ret = TokenType::NUM
                 end
 
@@ -231,6 +236,7 @@ class Scanner
                         ret = TokenType::EOF
 
                     else # invalid char
+                        puts "error: " + char
                         ret = TokenType::ERROR
                 end
             end # special symbols

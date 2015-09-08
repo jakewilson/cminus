@@ -13,7 +13,4 @@ Scanner.entire_file = input.readlines
 input.rewind
 
 while (ret = Scanner.getTokenType(input)) != TokenType::EOF
-    if ret == TokenType::ERROR
-        puts "error"
-    end
 end
