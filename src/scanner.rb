@@ -4,41 +4,63 @@
 # Date: 08/29/15
 #
 
-require_relative 'types.rb'
+require './types.rb'
 
 class Scanner
 
-    # TODO: delete this after p1 has been turned in
-    @@entire_file
+    def self.chr(c)
+        if c != nil
+            return c.chr
+        end
+        return nil
+    end
+
+    def self.printLine(input)
+        if !$debug
+            return
+        end
+        input.lineno += 1
+        if entire_file[input.lineno] != nil
+            puts "\nINPUT: " + entire_file[input.lineno]
+        end
+    end
+
+    def self.printToken(token)
+        if !$debug
+            return
+        end
+        print token
+    end
+
+    def self.putToken(token)
+        if !$debug
+            return
+        end
+        puts token
+    end
 
     def self.getTokenType(input)
         done = true
         ret  = TokenType::ERROR
         loop do
             done = true
-            char = input.getc
+            char = chr(input.getc)
 
             # eat up all whitespace before anything else
             if char =~ /\s/
                 if char == "\n"
-                    input.lineno += 1
-                    if entire_file[input.lineno] != nil
-                        puts "INPUT: " + entire_file[input.lineno]
-                    end
+                    printLine(input)
                 end
-                while (char = input.getc) =~ /\s/
+                while (char = chr(input.getc)) =~ /\s/
                     if char == "\n"
-                        input.lineno += 1
-                        if entire_file[input.lineno] != nil
-                            puts "INPUT: " + entire_file[input.lineno]
-                        end
+                        printLine(input)
                     end
                 end
             end
 
             if char =~ /[a-z]/i # is letter
                 id = char
-                while (char = input.getc) =~ /[a-z]/i
+                while (char = chr(input.getc)) =~ /[a-z]/i
                     id += char
                 end
     
@@ -47,15 +69,15 @@ class Scanner
                 ret = TokenType::ID
                 if is_keyword(id)
                     ret = TokenType::KEYWORD
-                    print "keyword: "
+                    printToken "keyword: "
                 else 
-                    print "ID: "
+                    printToken "ID: "
                 end
-                puts id
+                putToken id
 
             elsif char =~ /[0-9]/ # is digit
                 num = char
-                while (char = input.getc) =~ /[0-9]/
+                while (char = chr(input.getc)) =~ /[0-9]/
                     num += char
                 end
 
@@ -63,13 +85,13 @@ class Scanner
                 if char == '.'
                     float = num
                     float += '.'
-                    if (char = input.getc) =~ /[0-9]/
+                    if (char = chr(input.getc)) =~ /[0-9]/
                         float += char
-                        while (char = input.getc) =~ /[0-9]/
+                        while (char = chr(input.getc)) =~ /[0-9]/
                             float += char
                         end
                     else
-                        puts "error: " + float
+                        putToken "error: " + float
                         input.seek(-1, IO::SEEK_CUR)
                         return TokenType::ERROR
                     end
@@ -82,19 +104,19 @@ class Scanner
                         float = num + 'E'
                     end
 
-                    char = input.getc
+                    char = chr(input.getc)
                     if char == '+' || char == '-'
                         float += char
-                        char = input.getc
+                        char = chr(input.getc)
                     end
 
                     if char =~ /[0-9]/
                         float += char
-                        while (char = input.getc) =~ /[0-9]/
+                        while (char = chr(input.getc)) =~ /[0-9]/
                             float += char
                         end
                     else
-                        puts "error: " + float
+                        putToken "error: " + float
                         input.seek(-1, IO::SEEK_CUR)
                         return TokenType::ERROR
                     end
@@ -103,10 +125,10 @@ class Scanner
                 # make sure not to consume the next character
                 input.seek(-1, IO::SEEK_CUR)
                 if float != ''
-                    puts "FLOAT: " + float
+                    putToken "FLOAT: " + float
                     ret = TokenType::FLOAT
                 else
-                    puts "NUM: " + num
+                    putToken "NUM: " + num
                     ret = TokenType::NUM
                 end
 
@@ -114,129 +136,127 @@ class Scanner
                 case char
                     when '+'
                         ret = TokenType::PLUS
-                        puts '+'
+                        putToken '+'
 
                     when '-'
                         ret = TokenType::MINUS
-                        puts '-'
+                        putToken '-'
 
                     when '*'
                         ret = TokenType::TIMES
-                        puts '*'
+                        putToken '*'
 
                     when '/'
                         comment = 0
-                        char = input.getc
+                        char = chr(input.getc)
                         if char == '*' # block comment
                             comment += 1
                             while comment > 0
-                                char = input.getc
+                                char = chr(input.getc)
                                 if char == '*'
-                                    if input.getc == '/'
+                                    if chr(input.getc) == '/'
                                         comment -= 1
                                     else
                                         input.seek(-1, IO::SEEK_CUR)
                                     end
                                 elsif char == '/'
-                                    if input.getc == '*'
+                                    if chr(input.getc) == '*'
                                         comment += 1
                                     else
                                         input.seek(-1, IO::SEEK_CUR)
                                     end
                                 elsif char == "\n"
-                                    input.lineno += 1
-                                    if entire_file[input.lineno] != nil
-                                        puts "INPUT: " + entire_file[input.lineno]
-                                    end
+                                    printLine(input)
                                 end
                             end
                             done = false
                         elsif char == '/' # line comment
-                            while (char = input.getc) != "\n"
+                            while (char = chr(input.getc)) != "\n"
                             end
                             done = false
                         else
                             ret = TokenType::DIVIDE
                             input.seek(-1, IO::SEEK_CUR)
-                            puts '/'
+                            putToken '/'
                         end
 
                     when '<'
                         ret = TokenType::LT
-                        if input.getc == '='
+                        if chr(input.getc) == '='
                             ret = TokenType::LTE
-                            puts '<='
+                            putToken '<='
                         else
-                            puts '<'
+                            putToken '<'
                             input.seek(-1, IO::SEEK_CUR)
                         end
 
                     when '>'
                         ret = TokenType::GT
-                        if input.getc == '='
+                        if chr(input.getc) == '='
                             ret = TokenType::GTE
-                            puts '>='
+                            putToken '>='
                         else
-                            puts '>'
+                            putToken '>'
                             input.seek(-1, IO::SEEK_CUR)
                         end
 
                     when '='
                         ret = TokenType::ASSIGN
-                        if input.getc == '='
+                        if chr(input.getc) == '='
                             ret = TokenType::IS_EQUAL
-                            puts '=='
+                            putToken '=='
                         else
-                            puts '='
+                            putToken '='
                             input.seek(-1, IO::SEEK_CUR)
                         end
 
                     when '!'
-                        if input.getc == '='
+                        if chr(input.getc) == '='
                             ret = TokenType::NOT_EQUAL
-                            puts '!='
+                            putToken '!='
                         else
                             ret = TokenType::ERROR
+                            putToken "ERROR: !"
                             input.seek(-1, IO::SEEK_CUR)
                         end
 
                     when ';'
                         ret = TokenType::SEMICOLON
-                        puts ';'
+                        putToken ';'
 
                     when ','
                         ret = TokenType::COMMA
-                        puts ','
+                        putToken ','
 
                     when '['
                         ret = TokenType::LEFT_BRACKET
-                        puts '['
+                        putToken '['
 
                     when ']'
                         ret = TokenType::RIGHT_BRACKET
-                        puts ']'
+                        putToken ']'
 
                     when '{'
                         ret = TokenType::LEFT_BRACE
-                        puts '{'
+                        putToken '{'
 
                     when '}'
                         ret = TokenType::RIGHT_BRACE
-                        puts '}'
+                        putToken '}'
 
                     when '('
                         ret = TokenType::LEFT_PAREN
-                        puts char
+                        putToken char
 
                     when ')'
                         ret = TokenType::RIGHT_PAREN
-                        puts char
+                        putToken char
 
                     when nil
                         ret = TokenType::EOF
 
                     else # invalid char
-                        puts "error: " + char
+                        putToken "error: " + char.to_s
                         ret = TokenType::ERROR
                 end
             end # special symbols
@@ -253,19 +273,15 @@ class Scanner
         return false
     end
 
-    def entire_file
-        @@entire_file
-    end
-
-    def entire_file=file
-        @@entire_file = file
+    def initialize
+        @entire_file = []
     end
 
     def self.entire_file
-        @@entire_file
+        @entire_file
     end
 
     def self.entire_file=file
-        @@entire_file = file
+        @entire_file = file
     end
 end
