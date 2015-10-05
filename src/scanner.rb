@@ -15,6 +15,9 @@ class Scanner
         return nil
     end
 
+    ##
+    # Prints the input line if the debug flag is on
+    ##
     def self.printLine(input)
         if !$debug
             return
@@ -25,6 +28,9 @@ class Scanner
         end
     end
 
+    ##
+    # Prints the token without a newline
+    ##
     def self.printToken(token)
         if !$debug
             return
@@ -32,6 +38,9 @@ class Scanner
         print token
     end
 
+    ##
+    # Prints the token with a newline
+    ##
     def self.putToken(token)
         if !$debug
             return

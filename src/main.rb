@@ -15,6 +15,7 @@ if !File.exists? ARGV[0]
     exit 1
 end
 
+# If more than one argument is supplied, turn the debug flag on
 if ARGV.count >= 2
     $debug = true
 end
