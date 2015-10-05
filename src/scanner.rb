@@ -48,7 +48,7 @@ class Scanner
         puts token
     end
 
-    def self.getTokenType(input)
+    def self.getToken(input)
         done = true
         ret  = TokenType::ERROR
         loop do
@@ -77,7 +77,8 @@ class Scanner
                 input.seek(-1, IO::SEEK_CUR)
                 ret = TokenType::ID
                 if is_keyword(id)
-                    ret = TokenType::KEYWORD
+                    # see types.rb
+                    ret = $keywords.index(id) + 2
                     printToken "keyword: "
                 else 
                     printToken "ID: "

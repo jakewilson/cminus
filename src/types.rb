@@ -3,18 +3,25 @@
 # Author: Jake Wilson
 # Date: 08/29/15
 
+$keywords = ['else', 'if', 'int', 'void', 'return', 'while', 'float']
+
+class Token
+    def initialize(type, val)
+        @type = type
+        @val = val
+    end
+end
+
 class TokenType
     ID             = 0
     NUM            = 1
-    FLOAT          = 2
-#    ELSE           = 2
-#    IF             = 3
-#    INT            = 4
-#    RETURN         = 5
-#    VOID           = 6
-#    WHILE          = 7
-#    FLOAT          = 8
-    KEYWORD        = 8
+    ELSE           = 2
+    IF             = 3
+    INT            = 4
+    VOID           = 6
+    RETURN         = 5
+    WHILE          = 7
+    FLOAT          = 8
     PLUS           = 9
     MINUS          = 10
     TIMES          = 11

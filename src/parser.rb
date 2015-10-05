@@ -5,4 +5,9 @@
 ##
 
 class Parser
+    def initialize(input)
+        puts "parsing it up"
+        @input = input
+        @token = Scanner.getToken(input)
+    end
 end
