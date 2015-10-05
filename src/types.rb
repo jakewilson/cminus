@@ -10,6 +10,14 @@ class Token
         @type = type
         @val = val
     end
+
+    def type
+        @type
+    end
+
+    def val
+        @val
+    end
 end
 
 class TokenType
@@ -45,5 +53,6 @@ class TokenType
     END_CMNT_END   = 29
     EOF            = 30
     ERROR          = 31
+    FLOAT_NUM      = 32
 end
 

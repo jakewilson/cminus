@@ -50,7 +50,7 @@ class Scanner
 
     def self.getToken(input)
         done = true
-        ret  = TokenType::ERROR
+        ret  = nil
         loop do
             done = true
             char = chr(input.getc)
@@ -75,12 +75,12 @@ class Scanner
     
                 # make sure not to consume the next character
                 input.seek(-1, IO::SEEK_CUR)
-                ret = TokenType::ID
                 if is_keyword(id)
                     # see types.rb
-                    ret = $keywords.index(id) + 2
+                    ret = Token.new($keywords.index(id) + 2, id)
                     printToken "keyword: "
                 else 
+                    ret = Token.new(TokenType::ID, id)
                     printToken "ID: "
                 end
                 putToken id
@@ -103,7 +103,7 @@ class Scanner
                     else
                         putToken "error: " + float
                         input.seek(-1, IO::SEEK_CUR)
-                        return TokenType::ERROR
+                        return Token.new(TokenType::ERROR, "ERROR")
                     end
                 end
 
@@ -128,7 +128,7 @@ class Scanner
                     else
                         putToken "error: " + float
                         input.seek(-1, IO::SEEK_CUR)
-                        return TokenType::ERROR
+                        return Token.new(TokenType::ERROR, "ERROR")
                     end
                 end
 
@@ -136,24 +136,24 @@ class Scanner
                 input.seek(-1, IO::SEEK_CUR)
                 if float != ''
                     putToken "FLOAT: " + float
-                    ret = TokenType::FLOAT
+                    ret = Token.new(TokenType::FLOAT_NUM, float)
                 else
                     putToken "NUM: " + num
-                    ret = TokenType::NUM
+                    ret = Token.new(TokenType::NUM, num)
                 end
 
             else # special symbols
                 case char
                     when '+'
-                        ret = TokenType::PLUS
+                        ret = Token.new(TokenType::PLUS, char)
                         putToken '+'
 
                     when '-'
-                        ret = TokenType::MINUS
+                        ret = Token.new(TokenType::MINUS, char)
                         putToken '-'
 
                     when '*'
-                        ret = TokenType::TIMES
+                        ret = Token.new(TokenType::TIMES, char)
                         putToken '*'
 
                     when '/'
@@ -185,92 +185,96 @@ class Scanner
                             end
                             done = false
                         else
-                            ret = TokenType::DIVIDE
+                            ret = Token.new(TokenType::DIVIDE, '/')
                             input.seek(-1, IO::SEEK_CUR)
                             putToken '/'
                         end
 
                     when '<'
-                        ret = TokenType::LT
                         if chr(input.getc) == '='
-                            ret = TokenType::LTE
+                            ret = Token.new(TokenType::LTE, "<=")
                             putToken '<='
                         else
+                            ret = Token.new(TokenType::LT, char)
                             putToken '<'
                             input.seek(-1, IO::SEEK_CUR)
                         end
 
                     when '>'
-                        ret = TokenType::GT
                         if chr(input.getc) == '='
-                            ret = TokenType::GTE
+                            ret = Token.new(TokenType::GTE, ">=")
                             putToken '>='
                         else
+                            ret = Token.new(TokenType::GT, char)
                             putToken '>'
                             input.seek(-1, IO::SEEK_CUR)
                         end
 
                     when '='
-                        ret = TokenType::ASSIGN
                         if chr(input.getc) == '='
-                            ret = TokenType::IS_EQUAL
+                            ret = Token.new(TokenType::IS_EQUAL, "==")
                             putToken '=='
                         else
+                            ret = Token.new(TokenType::ASSIGN, char)
                             putToken '='
                             input.seek(-1, IO::SEEK_CUR)
                         end
 
                     when '!'
                         if chr(input.getc) == '='
-                            ret = TokenType::NOT_EQUAL
+                            ret = Token.new(TokenType::NOT_EQUAL, char)
                             putToken '!='
                         else
-                            ret = TokenType::ERROR
+                            ret = Token.new(TokenType::ERROR, char)
                             putToken "ERROR: !"
                             input.seek(-1, IO::SEEK_CUR)
                         end
 
                     when ';'
-                        ret = TokenType::SEMICOLON
+                        ret = Token.new(TokenType::SEMICOLON, char)
                         putToken ';'
 
                     when ','
-                        ret = TokenType::COMMA
+                        ret = Token.new(TokenType::COMMA, char)
                         putToken ','
 
                     when '['
-                        ret = TokenType::LEFT_BRACKET
+                        ret = Token.new(TokenType::LEFT_BRACKET, char)
                         putToken '['
 
                     when ']'
-                        ret = TokenType::RIGHT_BRACKET
+                        ret = Token.new(TokenType::RIGHT_BRACKET, char)
                         putToken ']'
 
                     when '{'
-                        ret = TokenType::LEFT_BRACE
+                        ret = Token.new(TokenType::LEFT_BRACE, char)
                         putToken '{'
 
                     when '}'
-                        ret = TokenType::RIGHT_BRACE
+                        ret = Token.new(TokenType::RIGHT_BRACE, char)
                         putToken '}'
 
                     when '('
-                        ret = TokenType::LEFT_PAREN
+                        ret = Token.new(TokenType::LEFT_PAREN, char)
                         putToken char
 
                     when ')'
-                        ret = TokenType::RIGHT_PAREN
+                        ret = Token.new(TokenType::RIGHT_PAREN, char)
                         putToken char
 
                     when nil
-                        ret = TokenType::EOF
+                        ret = Token.new(TokenType::EOF, "EOF")
 
                     else # invalid char
                         putToken "error: " + char.to_s
-                        ret = TokenType::ERROR
+                        ret = Token.new(TokenType::ERROR, "ERROR")
                 end
             end # special symbols
             break if done == true
+        end
+        if ret == nil
+            puts "ret is nil"
+            return Token.new(TokenType::ERROR, "ERROR")
         end
         return ret
     end # end def
