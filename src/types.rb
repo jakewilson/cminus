@@ -63,3 +63,9 @@ end
 
 class Reject < RuntimeError
 end
+
+$first = {
+        "local_dec" => [TokenType::INT, TokenType::FLOAT, TokenType::VOID],
+        "stmt" => [TokenType::SEMICOLON, TokenType::ID, TokenType::NUM, TokenType::FLOAT, 
+                   TokenType::LEFT_PAREN, TokenType::LEFT_BRACE, TokenType::IF, TokenType::WHILE, TokenType::RETURN]
+         }

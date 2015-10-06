@@ -118,13 +118,48 @@ class Parser
     end
 
     def local_dec
-        while [TokenType::INT, TokenType::VOID, TokenType::FLOAT].index(@token.type)
+        while $first["local_dec"].index(@token.type)
             var_dec
         end
     end
 
     def stmt_list
-        #while @token.type
+        while $first["stmt"].index(@token.type)
+            stmt
+        end
+    end
+
+    def stmt
+
+    end
+
+    def exp_stmt
+        if @token.type == TokenType::SEMICOLON
+            match(TokenType::SEMICOLON)
+        else
+            # TODO
+            #exp
+            match(TokenType::SEMICOLON)
+        end
+    end
+
+    def select_stmt
+        match(TokenType::IF)
+        match(TokenType::LEFT_PAREN)
+        #exp
+        match(TokenType::RIGHT_PAREN)
+        if @token.type == TokenType::ELSE
+            match(TokenType::ELSE)
+            stmt
+        end
+    end
+
+    def iter_stmt
+
+    end
+
+    def return_stmt
+        
     end
 
     ##
