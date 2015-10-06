@@ -118,9 +118,7 @@ class Parser
     end
 
     def local_dec
-        while @token.type == TokenType::INT || 
-              @token.type == TokenType::VOID ||
-              @token.type == TokenType::FLOAT
+        while [TokenType::INT, TokenType::VOID, TokenType::FLOAT].index(@token.type) != nil
             var_dec
         end
     end
