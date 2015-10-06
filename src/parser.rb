@@ -113,7 +113,7 @@ class Parser
         # TODO may need to change
         match(TokenType::LEFT_BRACE)
         local_dec
-        #stmt_list
+        stmt_list
         match(TokenType::RIGHT_BRACE)
     end
 
@@ -130,7 +130,15 @@ class Parser
     end
 
     def stmt
-
+        if $first["select-stmt"].index(@token.type)
+            select_stmt
+        elsif $first["compound-stmt"].index(@token.type)
+            compound_stmt
+        elsif $first["return-stmt"].index(@token.type)
+            return_stmt
+        elsif $first["iter-stmt"].index(@token.type)
+            iter_stmt
+        end
     end
 
     def exp_stmt
@@ -138,7 +146,7 @@ class Parser
             match(TokenType::SEMICOLON)
         else
             # TODO
-            #exp
+            exp
             match(TokenType::SEMICOLON)
         end
     end
@@ -146,8 +154,9 @@ class Parser
     def select_stmt
         match(TokenType::IF)
         match(TokenType::LEFT_PAREN)
-        #exp
+        exp
         match(TokenType::RIGHT_PAREN)
+        stmt
         if @token.type == TokenType::ELSE
             match(TokenType::ELSE)
             stmt
@@ -155,11 +164,25 @@ class Parser
     end
 
     def iter_stmt
-
+        match(TokenType::WHILE)
+        match(TokenType::LEFT_PAREN)
+        exp
+        match(TokenType::RIGHT_PAREN)
+        stmt
     end
 
     def return_stmt
-        
+        match(TokenType::RETURN)
+        if @token.type == TokenType::SEMICOLON
+            match(TokenType::SEMICOLON)
+        else
+            #exp
+            match(TokenType::SEMICOLON)
+        end
+    end
+
+    def exp
+        # TODO
     end
 
     ##
@@ -169,6 +192,7 @@ class Parser
         if (@token.type == expected)
             @token = Scanner.getToken(@input)
         else
+            puts "rejecting #{@token.type}"
             raise Reject
         end
     end

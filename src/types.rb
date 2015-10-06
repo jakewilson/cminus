@@ -67,5 +67,11 @@ end
 $first = {
         "local_dec" => [TokenType::INT, TokenType::FLOAT, TokenType::VOID],
         "stmt" => [TokenType::SEMICOLON, TokenType::ID, TokenType::NUM, TokenType::FLOAT, 
-                   TokenType::LEFT_PAREN, TokenType::LEFT_BRACE, TokenType::IF, TokenType::WHILE, TokenType::RETURN]
+                   TokenType::LEFT_PAREN, TokenType::LEFT_BRACE, TokenType::IF, TokenType::WHILE, TokenType::RETURN],
+        "return-stmt" => [TokenType::RETURN],
+        "compound-stmt" => [TokenType::LEFT_BRACE],
+        "select-stmt" => [TokenType::IF],
+        "iter-stmt" => [TokenType::WHILE],
+        "exp" => [TokenType::ID, TokenType::NUM, TokenType::LEFT_PAREN],
+        "var" => [TokenType::ID]
          }
