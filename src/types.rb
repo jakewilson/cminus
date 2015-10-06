@@ -18,6 +18,11 @@ class Token
     def val
         @val
     end
+
+    def show
+        puts @type
+        puts @val
+    end
 end
 
 class TokenType
@@ -26,8 +31,8 @@ class TokenType
     ELSE           = 2
     IF             = 3
     INT            = 4
-    VOID           = 6
-    RETURN         = 5
+    VOID           = 5
+    RETURN         = 6
     WHILE          = 7
     FLOAT          = 8
     PLUS           = 9

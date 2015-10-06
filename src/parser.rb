@@ -26,6 +26,21 @@ class Parser
 
     def dec
         type_spec_id
+        case @token.type
+            when TokenType::SEMICOLON
+                match(TokenType::SEMICOLON)
+
+            when TokenType::LEFT_PAREN
+                match(TokenType::LEFT_PAREN)
+                params
+                match(TokenType::RIGHT_PAREN)
+                compound_stmt
+                
+            when TokenType::LEFT_BRACKET
+                
+            else
+                raise Reject
+        end
     end
 
     def type_spec_id
@@ -37,13 +52,48 @@ class Parser
         case @token.val
             when 'int'
                 match(TokenType::INT)
+
             when 'float'
                 match(TokenType::FLOAT)
+
             when 'void'
                 match(TokenType::VOID)
+
             else
                 raise Reject
         end
+    end
+
+    def params
+        if @token.type == TokenType::VOID
+            match(TokenType::VOID)
+        else
+            param_list
+        end
+    end
+
+    def param_list
+        param
+        while (@token.type == TokenType::COMMA)
+            match(TokenType::COMMA)
+            param
+        end
+    end
+
+    def param
+        type_spec_id
+        if (@token.type == TokenType::LEFT_BRACKET)
+            match(TokenType::LEFT_BRACKET)
+            match(TokenType::RIGHT_BRACKET)
+        end
+    end
+
+    def compound_stmt
+        # TODO may need to change
+        match(TokenType::LEFT_BRACE)
+        #local_decs
+        #stmt_list
+        match(TokenType::RIGHT_BRACE)
     end
 
     ##
