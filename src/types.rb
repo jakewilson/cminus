@@ -73,5 +73,9 @@ $first = {
         "select-stmt" => [TokenType::IF],
         "iter-stmt" => [TokenType::WHILE],
         "exp" => [TokenType::ID, TokenType::NUM, TokenType::LEFT_PAREN],
-        "var" => [TokenType::ID]
+        "var" => [TokenType::ID],
+        "simple-exp" => [TokenType::ID, TokenType::NUM, TokenType::LEFT_PAREN],
+        "relop" => [TokenType::GTE, TokenType::GT, TokenType::LTE, TokenType::LT, TokenType::NOT_EQUAL, TokenType::IS_EQUAL],
+        "addop" => [TokenType::PLUS, TokenType::MINUS],
+        "mulop" => [TokenType::TIMES, TokenType::DIVIDE]
          }

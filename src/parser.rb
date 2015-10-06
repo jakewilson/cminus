@@ -37,7 +37,7 @@ class Parser
                 compound_stmt
                 
             when TokenType::LEFT_BRACKET
-                
+                # TODO                
             else
                 raise Reject
         end
@@ -59,13 +59,10 @@ class Parser
         case @token.val
             when 'int'
                 match(TokenType::INT)
-
             when 'float'
                 match(TokenType::FLOAT)
-
             when 'void'
                 match(TokenType::VOID)
-
             else
                 raise Reject
         end
@@ -83,7 +80,6 @@ class Parser
         type_spec
         match(TokenType::ID)
     end
-
 
     def params
         if @token.type == TokenType::VOID
@@ -138,6 +134,10 @@ class Parser
             return_stmt
         elsif $first["iter-stmt"].index(@token.type)
             iter_stmt
+        elsif $first["exp"].index(@token.type)
+            exp_stmt
+        else
+            raise Reject
         end
     end
 
@@ -145,7 +145,6 @@ class Parser
         if @token.type == TokenType::SEMICOLON
             match(TokenType::SEMICOLON)
         else
-            # TODO
             exp
             match(TokenType::SEMICOLON)
         end
@@ -176,20 +175,86 @@ class Parser
         if @token.type == TokenType::SEMICOLON
             match(TokenType::SEMICOLON)
         else
-            #exp
+            exp
             match(TokenType::SEMICOLON)
         end
     end
 
     def exp
+        if @token.type == TokenType::ID
+            match(TokenType::ID)
+            if @token.type == TokenType::ASSIGN
+                match(TokenType::ASSIGN)
+                exp
+            else
+                relop
+                add_exp
+            end
+        else
+            simple_exp
+        end
         # TODO
+    end
+
+    def relop
+        if $first["relop"].index(@token.type)
+            match(@token.type)
+        else
+            match(TokenType::ERROR)
+        end
+    end
+
+    def simple_exp
+        add_exp
+        while $first["relop"].index(@token.type)
+            match(@token.type)
+            add_exp
+        end
+    end
+
+    def add_exp
+        term
+        while $first["addop"].index(@token.type)
+            match(@token.type)
+            term
+        end
+    end
+
+    def term
+        factor
+        while $first["mulop"].index(@token.type)
+            match(@token.type)
+            factor
+        end
+    end
+
+    def factor
+        if @token.type == TokenType::LEFT_PAREN
+            match(TokenType::LEFT_PAREN)
+            exp
+            match(TokenType::RIGHT_PAREN)
+        elsif @token.type == TokenType::NUM
+            match(TokenType::NUM)
+        elsif @token.type == TokenType::ID
+            match(TokenType::ID)
+            if @token.type == TokenType::LEFT_BRACKET
+                match(TokenType::LEFT_BRACKET)
+                exp
+                match(TokenType::RIGHT_BRACKET)
+            elsif @token.type == TokenType::LEFT_PAREN
+                match(TokenType::LEFT_PAREN)
+                args
+                match(TokenType::RIGHT_PAREN) 
+            end
+        end
+        # TODO add var and call
     end
 
     ##
     # Matches the current token type with the expected token type
     ##
     def match(expected)
-        if (@token.type == expected)
+        if @token.type == expected
             @token = Scanner.getToken(@input)
         else
             puts "rejecting #{@token.type}"
