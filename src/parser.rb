@@ -43,9 +43,16 @@ class Parser
         end
     end
 
-    def type_spec_id
-        type_spec
-        match(TokenType::ID)
+    def var_dec
+        type_spec_id
+        if @token.type == TokenType::SEMICOLON
+            match(TokenType::SEMICOLON)
+        else
+            match(TokenType::LEFT_BRACKET)
+            match(TokenType::NUM)
+            match(TokenType::RIGHT_BRACKET)
+            match(TokenType::SEMICOLON)
+        end
     end
 
     def type_spec
@@ -63,6 +70,20 @@ class Parser
                 raise Reject
         end
     end
+
+    def func_dec
+        type_spec_id
+        match(TokenType::LEFT_PAREN)
+        params
+        match(TokenType::RIGHT_PAREN)
+        compound_stmt
+    end
+
+    def type_spec_id
+        type_spec
+        match(TokenType::ID)
+    end
+
 
     def params
         if @token.type == TokenType::VOID
@@ -91,9 +112,21 @@ class Parser
     def compound_stmt
         # TODO may need to change
         match(TokenType::LEFT_BRACE)
-        #local_decs
+        local_dec
         #stmt_list
         match(TokenType::RIGHT_BRACE)
+    end
+
+    def local_dec
+        while @token.type == TokenType::INT || 
+              @token.type == TokenType::VOID ||
+              @token.type == TokenType::FLOAT
+            var_dec
+        end
+    end
+
+    def stmt_list
+        #while @token.type
     end
 
     ##
