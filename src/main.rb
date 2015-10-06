@@ -31,3 +31,11 @@ Scanner.entire_file = input.readlines
 input.rewind
 
 parser = Parser.new(input)
+begin
+    parser.parse
+    parser.match(TokenType::EOF)
+    puts "ACCEPT"
+rescue Reject
+    puts "REJECT"
+end
+

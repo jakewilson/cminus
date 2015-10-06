@@ -56,3 +56,5 @@ class TokenType
     FLOAT_NUM      = 32
 end
 
+class Reject < RuntimeError
+end
