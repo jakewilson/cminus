@@ -14,7 +14,6 @@ class Parser
 
     def parse
         prog
-        # TODO check for EOF
     end
 
     def prog
@@ -39,7 +38,7 @@ class Parser
                 compound_stmt
                 
             when TokenType::LEFT_BRACKET
-                # TODO                
+                # TODO 
             else
                 raise Reject
         end
@@ -184,6 +183,11 @@ class Parser
     def exp
         if @token.type == TokenType::ID
             match(TokenType::ID)
+            if @token.type == TokenType::LEFT_BRACKET
+                @next_token = @token
+                @token = @prev_token
+                var
+            end
             if @token.type == TokenType::ASSIGN
                 match(TokenType::ASSIGN)
                 exp
@@ -194,6 +198,15 @@ class Parser
             end
         else
             simple_exp
+        end
+    end
+
+    def var
+        match(TokenType::ID)
+        if @token.type == TokenType::LEFT_BRACKET
+            match(TokenType::LEFT_BRACKET)
+            exp
+            match(TokenType::RIGHT_BRACKET)
         end
     end
 
