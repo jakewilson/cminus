@@ -66,16 +66,18 @@ end
 
 $first = {
         "local_dec" => [TokenType::INT, TokenType::FLOAT, TokenType::VOID],
-        "stmt" => [TokenType::SEMICOLON, TokenType::ID, TokenType::NUM, TokenType::FLOAT, 
+        "stmt" => [TokenType::SEMICOLON, TokenType::ID, TokenType::NUM, 
                    TokenType::LEFT_PAREN, TokenType::LEFT_BRACE, TokenType::IF, TokenType::WHILE, TokenType::RETURN],
         "return-stmt" => [TokenType::RETURN],
         "compound-stmt" => [TokenType::LEFT_BRACE],
         "select-stmt" => [TokenType::IF],
         "iter-stmt" => [TokenType::WHILE],
+        "exp-stmt" => [TokenType::ID, TokenType::NUM, TokenType::LEFT_PAREN, TokenType::SEMICOLON],
         "exp" => [TokenType::ID, TokenType::NUM, TokenType::LEFT_PAREN],
         "var" => [TokenType::ID],
         "simple-exp" => [TokenType::ID, TokenType::NUM, TokenType::LEFT_PAREN],
         "relop" => [TokenType::GTE, TokenType::GT, TokenType::LTE, TokenType::LT, TokenType::NOT_EQUAL, TokenType::IS_EQUAL],
         "addop" => [TokenType::PLUS, TokenType::MINUS],
-        "mulop" => [TokenType::TIMES, TokenType::DIVIDE]
+        "mulop" => [TokenType::TIMES, TokenType::DIVIDE],
+        "args-list" => [TokenType::ID, TokenType::LEFT_PAREN, TokenType::NUM]
          }

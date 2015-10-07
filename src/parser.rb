@@ -8,6 +8,8 @@ class Parser
     def initialize(input)
         @input = input
         @token = Scanner.getToken(input)
+        @prev_token = nil
+        @next_token = nil
     end
 
     def parse
@@ -106,7 +108,6 @@ class Parser
     end
 
     def compound_stmt
-        # TODO may need to change
         match(TokenType::LEFT_BRACE)
         local_dec
         stmt_list
@@ -134,10 +135,10 @@ class Parser
             return_stmt
         elsif $first["iter-stmt"].index(@token.type)
             iter_stmt
-        elsif $first["exp"].index(@token.type)
+        elsif $first["exp-stmt"].index(@token.type)
             exp_stmt
         else
-            raise Reject
+            match(TokenType::ERROR)
         end
     end
 
@@ -187,13 +188,13 @@ class Parser
                 match(TokenType::ASSIGN)
                 exp
             else
-                relop
-                add_exp
+                @next_token = @token
+                @token = @prev_token
+                simple_exp
             end
         else
             simple_exp
         end
-        # TODO
     end
 
     def relop
@@ -246,8 +247,29 @@ class Parser
                 args
                 match(TokenType::RIGHT_PAREN) 
             end
+        else
+            match(TokenType::ERROR)
         end
-        # TODO add var and call
+    end
+
+    def args
+        if $first["args-list"].index(@token.type)
+            args_list
+        end
+    end
+
+    def args_list
+        exp
+        while @token.type == TokenType::COMMA
+            match(TokenType::COMMA)
+            exp
+        end
+    end
+
+    def print_token(str)
+        if $debug
+            puts "#{str} #{@token.val}"
+        end
     end
 
     ##
@@ -255,9 +277,16 @@ class Parser
     ##
     def match(expected)
         if @token.type == expected
-            @token = Scanner.getToken(@input)
+            @prev_token = @token
+            print_token "accepted"
+            if @next_token.nil?
+                @token = Scanner.getToken(@input)
+            else
+                @token = @next_token.clone
+                @next_token = nil
+            end
         else
-            puts "rejecting #{@token.type}"
+            print_token "rejected"
             raise Reject
         end
     end
