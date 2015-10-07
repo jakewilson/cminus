@@ -3,8 +3,6 @@
 # Author: Jake Wilson
 # Date: 08/29/15
 
-$keywords = ['else', 'if', 'int', 'void', 'return', 'while', 'float']
-
 class Token
     def initialize(type, val)
         @type = type
@@ -61,23 +59,29 @@ class TokenType
     FLOAT_NUM      = 32
 end
 
+# This is for signaling to the main routine
+# that the program is to be rejected during parsing
 class Reject < RuntimeError
 end
 
+$keywords = ['else', 'if', 'int', 'void', 'return', 'while', 'float']
+
+# Hash Table for the first sets of all relevant rules
 $first = {
-        "local_dec" => [TokenType::INT, TokenType::FLOAT, TokenType::VOID],
-        "stmt" => [TokenType::SEMICOLON, TokenType::ID, TokenType::NUM, 
-                   TokenType::LEFT_PAREN, TokenType::LEFT_BRACE, TokenType::IF, TokenType::WHILE, TokenType::RETURN, TokenType::FLOAT_NUM],
-        "return-stmt" => [TokenType::RETURN],
+        "local_dec"     => [TokenType::INT, TokenType::FLOAT, TokenType::VOID],
+        "stmt"          => [TokenType::SEMICOLON, TokenType::ID, TokenType::NUM, 
+                            TokenType::LEFT_PAREN, TokenType::LEFT_BRACE, TokenType::IF,
+                            TokenType::WHILE, TokenType::RETURN, TokenType::FLOAT_NUM],
+        "return-stmt"   => [TokenType::RETURN],
         "compound-stmt" => [TokenType::LEFT_BRACE],
-        "select-stmt" => [TokenType::IF],
-        "iter-stmt" => [TokenType::WHILE],
-        "exp-stmt" => [TokenType::ID, TokenType::NUM, TokenType::LEFT_PAREN, TokenType::SEMICOLON, TokenType::FLOAT_NUM],
-        "exp" => [TokenType::ID, TokenType::NUM, TokenType::LEFT_PAREN, TokenType::FLOAT_NUM],
-        "var" => [TokenType::ID],
-        "simple-exp" => [TokenType::ID, TokenType::NUM, TokenType::LEFT_PAREN, TokenType::FLOAT_NUM],
-        "relop" => [TokenType::GTE, TokenType::GT, TokenType::LTE, TokenType::LT, TokenType::NOT_EQUAL, TokenType::IS_EQUAL],
-        "addop" => [TokenType::PLUS, TokenType::MINUS],
-        "mulop" => [TokenType::TIMES, TokenType::DIVIDE],
-        "args-list" => [TokenType::ID, TokenType::LEFT_PAREN, TokenType::NUM, TokenType::FLOAT_NUM]
+        "select-stmt"   => [TokenType::IF],
+        "iter-stmt"     => [TokenType::WHILE],
+        "exp-stmt"      => [TokenType::ID, TokenType::NUM, TokenType::LEFT_PAREN, TokenType::SEMICOLON, TokenType::FLOAT_NUM],
+        "exp"           => [TokenType::ID, TokenType::NUM, TokenType::LEFT_PAREN, TokenType::FLOAT_NUM],
+        "var"           => [TokenType::ID],
+        "simple-exp"    => [TokenType::ID, TokenType::NUM, TokenType::LEFT_PAREN, TokenType::FLOAT_NUM],
+        "relop"         => [TokenType::GTE, TokenType::GT, TokenType::LTE, TokenType::LT, TokenType::NOT_EQUAL, TokenType::IS_EQUAL],
+        "addop"         => [TokenType::PLUS, TokenType::MINUS],
+        "mulop"         => [TokenType::TIMES, TokenType::DIVIDE],
+        "args-list"     => [TokenType::ID, TokenType::LEFT_PAREN, TokenType::NUM, TokenType::FLOAT_NUM]
          }
