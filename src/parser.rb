@@ -234,7 +234,7 @@ class Parser
             match(TokenType::LEFT_PAREN)
             exp
             match(TokenType::RIGHT_PAREN)
-        elsif @token.type == TokenType::NUM
+        elsif @token.type == TokenType::NUM || @token.type == TokenType::FLOAT_NUM
             match(TokenType::NUM)
         elsif @token.type == TokenType::ID
             match(TokenType::ID)
@@ -276,6 +276,9 @@ class Parser
     # Matches the current token type with the expected token type
     ##
     def match(expected)
+        if @token.type == TokenType::FLOAT_NUM && expected == TokenType::NUM
+            expected = TokenType::FLOAT_NUM
+        end
         if @token.type == expected
             @prev_token = @token
             print_token "accepted"

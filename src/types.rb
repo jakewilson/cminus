@@ -67,17 +67,17 @@ end
 $first = {
         "local_dec" => [TokenType::INT, TokenType::FLOAT, TokenType::VOID],
         "stmt" => [TokenType::SEMICOLON, TokenType::ID, TokenType::NUM, 
-                   TokenType::LEFT_PAREN, TokenType::LEFT_BRACE, TokenType::IF, TokenType::WHILE, TokenType::RETURN],
+                   TokenType::LEFT_PAREN, TokenType::LEFT_BRACE, TokenType::IF, TokenType::WHILE, TokenType::RETURN, TokenType::FLOAT_NUM],
         "return-stmt" => [TokenType::RETURN],
         "compound-stmt" => [TokenType::LEFT_BRACE],
         "select-stmt" => [TokenType::IF],
         "iter-stmt" => [TokenType::WHILE],
-        "exp-stmt" => [TokenType::ID, TokenType::NUM, TokenType::LEFT_PAREN, TokenType::SEMICOLON],
-        "exp" => [TokenType::ID, TokenType::NUM, TokenType::LEFT_PAREN],
+        "exp-stmt" => [TokenType::ID, TokenType::NUM, TokenType::LEFT_PAREN, TokenType::SEMICOLON, TokenType::FLOAT_NUM],
+        "exp" => [TokenType::ID, TokenType::NUM, TokenType::LEFT_PAREN, TokenType::FLOAT_NUM],
         "var" => [TokenType::ID],
-        "simple-exp" => [TokenType::ID, TokenType::NUM, TokenType::LEFT_PAREN],
+        "simple-exp" => [TokenType::ID, TokenType::NUM, TokenType::LEFT_PAREN, TokenType::FLOAT_NUM],
         "relop" => [TokenType::GTE, TokenType::GT, TokenType::LTE, TokenType::LT, TokenType::NOT_EQUAL, TokenType::IS_EQUAL],
         "addop" => [TokenType::PLUS, TokenType::MINUS],
         "mulop" => [TokenType::TIMES, TokenType::DIVIDE],
-        "args-list" => [TokenType::ID, TokenType::LEFT_PAREN, TokenType::NUM]
+        "args-list" => [TokenType::ID, TokenType::LEFT_PAREN, TokenType::NUM, TokenType::FLOAT_NUM]
          }
