@@ -69,6 +69,7 @@ $keywords = ['else', 'if', 'int', 'void', 'return', 'while', 'float']
 # Hash Table for the first sets of all relevant rules
 $first = {
         "local_dec"     => [TokenType::INT, TokenType::FLOAT, TokenType::VOID],
+        "dec"           => [TokenType::INT, TokenType::FLOAT, TokenType::VOID],
         "stmt"          => [TokenType::SEMICOLON, TokenType::ID, TokenType::NUM, 
                             TokenType::LEFT_PAREN, TokenType::LEFT_BRACE, TokenType::IF,
                             TokenType::WHILE, TokenType::RETURN, TokenType::FLOAT_NUM],

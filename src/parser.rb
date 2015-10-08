@@ -22,6 +22,9 @@ class Parser
 
     def dec_list
         dec
+        while $first["dec"].index(@token.type)
+            dec
+        end
         # TODO while loop
     end
 
@@ -38,7 +41,10 @@ class Parser
                 compound_stmt
                 
             when TokenType::LEFT_BRACKET
-                # TODO 
+                match(TokenType::LEFT_BRACKET)
+                match(TokenType::NUM)
+                match(TokenType::RIGHT_BRACKET)
+                match(TokenType::SEMICOLON)
             else
                 raise Reject
         end
@@ -181,23 +187,28 @@ class Parser
     end
 
     def exp
-        if @token.type == TokenType::ID
-            match(TokenType::ID)
-            if @token.type == TokenType::LEFT_BRACKET
-                @next_token = @token
-                @token = @prev_token
-                var
-            end
-            if @token.type == TokenType::ASSIGN
-                match(TokenType::ASSIGN)
-                exp
-            else
-                @next_token = @token
-                @token = @prev_token
-                simple_exp
-            end
+        factor
+        if @token.type == TokenType::ASSIGN
+            match(TokenType::ASSIGN)
+            exp
         else
-            simple_exp
+            rotcaf
+        end
+    end
+
+    # start from factor and go backwards
+    def rotcaf
+        while $first["mulop"].index(@token.type)
+            match(@token.type)
+            factor
+        end
+        while $first["addop"].index(@token.type)
+            match(@token.type)
+            term
+        end
+        while $first["relop"].index(@token.type)
+            match(@token.type)
+            add_exp
         end
     end
 
@@ -289,6 +300,7 @@ class Parser
     # Matches the current token type with the expected token type
     ##
     def match(expected)
+        # We want to accept a float anytime a num is accepted
         if @token.type == TokenType::FLOAT_NUM && expected == TokenType::NUM
             expected = TokenType::FLOAT_NUM
         end
