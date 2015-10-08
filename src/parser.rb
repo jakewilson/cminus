@@ -25,7 +25,6 @@ class Parser
         while $first["dec"].index(@token.type)
             dec
         end
-        # TODO while loop
     end
 
     def dec

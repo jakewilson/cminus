@@ -10,6 +10,17 @@ require "./types.rb"
 require "./scanner.rb"
 require "./parser.rb"
 
+def parse(input)
+    parser = Parser.new(input)
+    begin
+        parser.parse
+        parser.match(TokenType::EOF)
+        return "ACCEPT"
+    rescue Reject
+        return "REJECT"
+    end
+end
+
 if ARGV.count ==  0 
     puts "Error: No file name supplied"
     exit 1
@@ -30,12 +41,4 @@ input = File.open(ARGV[0], 'r')
 Scanner.entire_file = input.readlines
 input.rewind
 
-parser = Parser.new(input)
-begin
-    parser.parse
-    parser.match(TokenType::EOF)
-    puts "ACCEPT"
-rescue Reject
-    puts "REJECT"
-end
-
+puts parse(input)
