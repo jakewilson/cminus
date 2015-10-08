@@ -351,7 +351,7 @@ RSpec.describe Parser do
 
     it "accepts and rejects" do
       inputs.each do |number, code, result, debug_level|
-        f = File.open("parser.tst", 'w+')
+        f = File.open("test", 'w+')
         f.write(code)
         f.rewind
         if (string = parse(f)) != result
@@ -360,7 +360,7 @@ RSpec.describe Parser do
         expect(string).to eq result
         f.close
       end
-      File.delete("parser.tst")
+      File.delete("test")
     end
   end
 end

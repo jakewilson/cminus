@@ -8,8 +8,6 @@ class Parser
     def initialize(input)
         @input = input
         @token = Scanner.getToken(input)
-        @prev_token = nil
-        @next_token = nil
     end
 
     def parse
@@ -63,14 +61,8 @@ class Parser
 
     def type_spec
         case @token.val
-            when 'int'
-                match(TokenType::INT)
-            when 'float'
-                match(TokenType::FLOAT)
-            when 'void'
-                match(TokenType::VOID)
-            else
-                raise Reject
+            when 'int', 'float', 'void'
+                match(@token.type)
         end
     end
 
@@ -141,8 +133,6 @@ class Parser
             iter_stmt
         elsif $first["exp-stmt"].index(@token.type)
             exp_stmt
-        else
-            match(TokenType::ERROR)
         end
     end
 
@@ -223,8 +213,6 @@ class Parser
     def relop
         if $first["relop"].index(@token.type)
             match(@token.type)
-        else
-            match(TokenType::ERROR)
         end
     end
 
@@ -253,25 +241,26 @@ class Parser
     end
 
     def factor
-        if @token.type == TokenType::LEFT_PAREN
-            match(TokenType::LEFT_PAREN)
-            exp
-            match(TokenType::RIGHT_PAREN)
-        elsif @token.type == TokenType::NUM || @token.type == TokenType::FLOAT_NUM
-            match(TokenType::NUM)
-        elsif @token.type == TokenType::ID
-            match(TokenType::ID)
-            if @token.type == TokenType::LEFT_BRACKET
-                match(TokenType::LEFT_BRACKET)
-                exp
-                match(TokenType::RIGHT_BRACKET)
-            elsif @token.type == TokenType::LEFT_PAREN
+        case @token.type
+            when TokenType::LEFT_PAREN
                 match(TokenType::LEFT_PAREN)
-                args
-                match(TokenType::RIGHT_PAREN) 
-            end
-        else
-            match(TokenType::ERROR)
+                exp
+                match(TokenType::RIGHT_PAREN)
+            when TokenType::NUM, TokenType::FLOAT_NUM
+                match(TokenType::NUM)
+            when TokenType::ID
+                match(TokenType::ID)
+                if @token.type == TokenType::LEFT_BRACKET
+                    match(TokenType::LEFT_BRACKET)
+                    exp
+                    match(TokenType::RIGHT_BRACKET)
+                elsif @token.type == TokenType::LEFT_PAREN
+                    match(TokenType::LEFT_PAREN)
+                    args
+                    match(TokenType::RIGHT_PAREN) 
+                end
+            else
+                raise Reject
         end
     end
 
@@ -304,14 +293,8 @@ class Parser
             expected = TokenType::FLOAT_NUM
         end
         if @token.type == expected
-            @prev_token = @token
             print_token "accepted"
-            if @next_token.nil?
-                @token = Scanner.getToken(@input)
-            else
-                @token = @next_token.clone
-                @next_token = nil
-            end
+            @token = Scanner.getToken(@input)
         else
             print_token "rejected"
             raise Reject
