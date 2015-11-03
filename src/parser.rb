@@ -82,6 +82,13 @@ class Parser
     def params
         if @token.type == TokenType::VOID
             match(TokenType::VOID)
+            if @token.type == TokenType::ID
+                match(TokenType::ID)
+                if @token.type == TokenType::COMMA
+                    match(TokenType::COMMA)
+                    param_list
+                end
+            end
         else
             param_list
         end
@@ -176,12 +183,16 @@ class Parser
     end
 
     def exp
-        factor
-        if @token.type == TokenType::ASSIGN
-            match(TokenType::ASSIGN)
-            exp
+        if @token.type == TokenType::ID
+            factor
+            if @token.type == TokenType::ASSIGN
+                match(TokenType::ASSIGN)
+                exp
+            else
+                rotcaf
+            end
         else
-            rotcaf
+            simple_exp
         end
     end
 
@@ -284,6 +295,12 @@ class Parser
         end
     end
 
+    def print_expected(str)
+        if $debug
+            puts "expected #{str}"
+        end
+    end
+
     ##
     # Matches the current token type with the expected token type
     ##
@@ -297,6 +314,7 @@ class Parser
             @token = Scanner.getToken(@input)
         else
             print_token "rejected"
+            print_expected expected
             raise Reject
         end
     end

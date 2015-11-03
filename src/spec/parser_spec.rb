@@ -311,6 +311,37 @@ RSpec.describe Parser do
 
     end
 
+    let(:bs) do
+      "
+       void main(void)
+ {
+    void i;
+    void j;
+    car (i, j);
+ }
+ 
+ 
+ int car(void x, void y)
+ {
+    int q;
+    
+    q=x+4;
+ 
+    return q;
+ }
+      "
+    end
+
+    let(:exp) do
+        "
+        void main(void) {
+            if (this == 10) {
+                that = 10 = this;
+            }
+        }
+        "
+    end
+
     let(:inputs) do
       [
         # [ TEST_NUMBER, TEST_CODE, EXPECTED_RESULT],
@@ -344,6 +375,8 @@ RSpec.describe Parser do
         [27 , bad_param2       , "REJECT" ],
         [28 , function_call2   , "ACCEPT" ],
         [29 , blah             , "ACCEPT" ],
+        [30 , bs               , "ACCEPT" ],
+        [31 , exp              , "REJECT" ],
       ]
     end
 
