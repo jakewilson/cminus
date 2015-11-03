@@ -63,6 +63,8 @@ class Parser
         case @token.val
             when 'int', 'float', 'void'
                 match(@token.type)
+            else
+                raise Reject
         end
     end
 
