@@ -1,14 +1,4 @@
 To do for semantics (not complete):
-- [ ] no void variables
+- [x] no void variables
 - [ ] return statements must match function return types
 - [ ] function calls must match function definitions in type and # of args
-- [ ] 
-- [ ]
-- [ ]
-- [ ]
-- [ ]
-- [ ]
-- [ ]
-- [ ]
-- [ ]
-- [ ]
