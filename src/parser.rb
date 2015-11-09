@@ -80,16 +80,6 @@ class Parser
         end
     end
 
-    def func_dec
-        @func_dec = true
-        type_spec_id
-        match(TokenType::LEFT_PAREN)
-        params
-        match(TokenType::RIGHT_PAREN)
-        compound_stmt
-        @func_dec = false
-    end
-
     def type_spec_id
         type_spec
         type = @token.val
@@ -231,15 +221,6 @@ class Parser
         while $first["relop"].index(@token.type)
             match(@token.type)
             add_exp
-        end
-    end
-
-    def var
-        match(TokenType::ID)
-        if @token.type == TokenType::LEFT_BRACKET
-            match(TokenType::LEFT_BRACKET)
-            exp
-            match(TokenType::RIGHT_BRACKET)
         end
     end
 

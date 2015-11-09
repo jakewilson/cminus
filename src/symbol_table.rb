@@ -7,7 +7,7 @@ class SymbolTable
     end
 
     def add id, s
-        @table[id] = s
+        @table[id] = Symbol_.new(id, s)
     end
 
     def get id
