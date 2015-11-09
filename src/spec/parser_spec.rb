@@ -365,7 +365,7 @@ RSpec.describe Parser do
         [17 , must_have_params , "REJECT" ],
         [18 , compute_god      , "ACCEPT" ],
         [19 , sort_integers    , "ACCEPT" ],
-        [20 , jake_sample1     , "ACCEPT" ],
+        [20 , jake_sample1     , "REJECT" ],
         [21 , jake_sample2     , "ACCEPT" ],
         [22 , almost_correct   , "REJECT" ],
         [23 , only_if          , "REJECT" ],
@@ -375,7 +375,7 @@ RSpec.describe Parser do
         [27 , bad_param2       , "REJECT" ],
         [28 , function_call2   , "ACCEPT" ],
         [29 , blah             , "ACCEPT" ],
-        [30 , bs               , "ACCEPT" ],
+        [30 , bs               , "REJECT" ],
         [31 , exp              , "REJECT" ],
       ]
     end

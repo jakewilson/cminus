@@ -5,9 +5,11 @@
 ##
 
 class Parser
+
     def initialize(input)
         @input = input
         @token = Scanner.getToken(input)
+        @var_dec = false # flag for whether we're in a variable declaration
     end
 
     def parse
@@ -48,6 +50,8 @@ class Parser
     end
 
     def var_dec
+        # TODO insert into symbol table here ?
+        @var_dec = true
         type_spec_id
         if @token.type == TokenType::SEMICOLON
             match(TokenType::SEMICOLON)
@@ -57,11 +61,15 @@ class Parser
             match(TokenType::RIGHT_BRACKET)
             match(TokenType::SEMICOLON)
         end
+        @var_dec = false
     end
 
     def type_spec
         case @token.val
-            when 'int', 'float', 'void'
+            when 'void'
+                raise Reject if @var_dec
+                match(@token.type)
+            when 'int', 'float'
                 match(@token.type)
             else
                 raise Reject
@@ -69,6 +77,7 @@ class Parser
     end
 
     def func_dec
+        # TODO main must be the last function declared
         type_spec_id
         match(TokenType::LEFT_PAREN)
         params
