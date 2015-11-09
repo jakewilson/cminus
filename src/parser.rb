@@ -12,6 +12,7 @@ class Parser
         @var_dec = false # flag for whether we're in a variable declaration
         @main_defined = false
         @table = SymbolTable.new
+        @current_func = ''
     end
 
     def parse
@@ -35,6 +36,7 @@ class Parser
         case @token.type
             when TokenType::SEMICOLON
                 @main_defined = false if @main_defined
+                @current_func = ''
                 match(TokenType::SEMICOLON)
 
             when TokenType::LEFT_PAREN # in function
@@ -45,6 +47,7 @@ class Parser
                 
             when TokenType::LEFT_BRACKET
                 @main_defined = false if @main_defined
+                @current_func = ''
                 match(TokenType::LEFT_BRACKET)
                 match(TokenType::NUM)
                 match(TokenType::RIGHT_BRACKET)
@@ -55,7 +58,6 @@ class Parser
     end
 
     def var_dec
-        # TODO insert into symbol table here ?
         @var_dec = true
         type_spec_id
         if @token.type == TokenType::SEMICOLON
@@ -87,20 +89,17 @@ class Parser
         if @token.val == 'main' and !@var_dec
             @main_defined = true
         end
+        if @table.get(@token.val) # attempted re-declaration
+            raise Reject
+        end
         @table.add(@token.val, type)
+        @current_func = @token.val if !@var_dec
         match(TokenType::ID)
     end
 
     def params
         if @token.type == TokenType::VOID
             match(TokenType::VOID)
-            if @token.type == TokenType::ID
-                match(TokenType::ID)
-                if @token.type == TokenType::COMMA
-                    match(TokenType::COMMA)
-                    param_list
-                end
-            end
         else
             param_list
         end
@@ -115,18 +114,22 @@ class Parser
     end
 
     def param
+        @var_dec = true
         type_spec_id
         if (@token.type == TokenType::LEFT_BRACKET)
             match(TokenType::LEFT_BRACKET)
             match(TokenType::RIGHT_BRACKET)
         end
+        @var_dec = false
     end
 
     def compound_stmt
         match(TokenType::LEFT_BRACE)
+        add_scope # add a new scope everytime we see a {
         local_dec
         stmt_list
         match(TokenType::RIGHT_BRACE)
+        rem_scope
     end
 
     def local_dec
@@ -294,11 +297,25 @@ class Parser
     end
 
     def print_token(str)
-        puts "#{str} #{@token.val}" if $debug
+        puts "#{str} #{@token.val} current_func: #{@current_func}" if $debug
     end
 
     def print_expected(str)
-        puts "expected #{str}" if $debug
+        puts "expected #{str} current_func: #{@current_func}" if $debug
+    end
+
+    def add_scope
+        @table.next = SymbolTable.new
+        @table.next.prev = @table
+        @table = @table.next
+    end
+
+    def rem_scope
+        @table = @table.prev
+    end
+
+    def print_table
+        if $debug then @table.print end
     end
 
     ##

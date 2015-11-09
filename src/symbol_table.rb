@@ -14,8 +14,26 @@ class SymbolTable
         @table[id]
     end
 
+    def next=n
+        @next = n
+    end
+
     def next
         @next
+    end
+
+    def prev=p
+        @prev = p
+    end
+
+    def prev
+        @prev
+    end
+
+    def print
+        @table.each do |s, sym|
+            puts sym
+        end
     end
 
 end
@@ -33,6 +51,10 @@ class Symbol_
 
     def type
         @type
+    end
+
+    def to_s
+        return @name + ":" + @type
     end
 
 end
