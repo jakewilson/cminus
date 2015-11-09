@@ -11,6 +11,7 @@ class Parser
         @token = Scanner.getToken(input)
         @var_dec = false # flag for whether we're in a variable declaration
         @main_defined = false
+        @table = SymbolTable.new
     end
 
     def parse
@@ -72,9 +73,8 @@ class Parser
         case @token.val
             when 'void'
                 raise Reject if @var_dec
-                match(@token.type)
             when 'int', 'float'
-                match(@token.type)
+                # accept
             else
                 raise Reject
         end
@@ -92,9 +92,12 @@ class Parser
 
     def type_spec_id
         type_spec
+        type = @token.val
+        match(@token.type)
         if @token.val == 'main' and !@var_dec
             @main_defined = true
         end
+        @table.add(@token.val, type)
         match(TokenType::ID)
     end
 
@@ -279,6 +282,7 @@ class Parser
             when TokenType::NUM, TokenType::FLOAT_NUM
                 match(TokenType::NUM)
             when TokenType::ID
+                raise Reject if @table.get(@token.val) == nil
                 match(TokenType::ID)
                 if @token.type == TokenType::LEFT_BRACKET
                     match(TokenType::LEFT_BRACKET)
@@ -309,15 +313,11 @@ class Parser
     end
 
     def print_token(str)
-        if $debug
-            puts "#{str} #{@token.val}"
-        end
+        puts "#{str} #{@token.val}" if $debug
     end
 
     def print_expected(str)
-        if $debug
-            puts "expected #{str}"
-        end
+        puts "expected #{str}" if $debug
     end
 
     ##

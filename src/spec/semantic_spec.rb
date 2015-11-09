@@ -34,6 +34,37 @@ RSpec.describe Parser do
       "
     end
 
+    let(:undeclared_var) do
+      "
+        int main(void) {
+            int y;
+            x = y + 5;
+        }
+      "
+    end
+
+    let(:declared_var) do
+      "
+        int main(void) {
+            int y;
+            y = y + 5;
+        }
+      "
+    end
+
+    let(:undeclared_var1) do
+      "
+        int main(void) {
+            int y;
+            int x;
+            float z;
+            y = y + 5;
+            z = 9.0;
+            x = a + 67; // 'a' should cause a failure
+        }
+      "
+    end
+
     let(:inputs) do
       [
         # [ TEST_NUMBER, TEST_CODE, EXPECTED_RESULT],
@@ -41,6 +72,9 @@ RSpec.describe Parser do
         [1  , function_decs    , "ACCEPT" ],
         [2  , no_main          , "REJECT" ],
         [3  , no_main_trick    , "REJECT" ],
+        [4  , undeclared_var   , "REJECT" ],
+        [5  , declared_var     , "ACCEPT" ],
+        [6  , undeclared_var1  , "REJECT" ],
       ]
     end
 

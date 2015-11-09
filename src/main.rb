@@ -9,6 +9,7 @@ $debug = false
 require "./types.rb"
 require "./scanner.rb"
 require "./parser.rb"
+require "./symbol_table.rb"
 
 def parse(input)
     parser = Parser.new(input)
