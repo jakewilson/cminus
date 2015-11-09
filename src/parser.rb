@@ -10,10 +10,12 @@ class Parser
         @input = input
         @token = Scanner.getToken(input)
         @var_dec = false # flag for whether we're in a variable declaration
+        @main_defined = false
     end
 
     def parse
         prog
+        raise Reject if !@main_defined
     end
 
     def prog
@@ -31,15 +33,17 @@ class Parser
         type_spec_id
         case @token.type
             when TokenType::SEMICOLON
+                @main_defined = false if @main_defined
                 match(TokenType::SEMICOLON)
 
-            when TokenType::LEFT_PAREN
+            when TokenType::LEFT_PAREN # in function
                 match(TokenType::LEFT_PAREN)
                 params
                 match(TokenType::RIGHT_PAREN)
                 compound_stmt
                 
             when TokenType::LEFT_BRACKET
+                @main_defined = false if @main_defined
                 match(TokenType::LEFT_BRACKET)
                 match(TokenType::NUM)
                 match(TokenType::RIGHT_BRACKET)
@@ -77,16 +81,20 @@ class Parser
     end
 
     def func_dec
-        # TODO main must be the last function declared
+        @func_dec = true
         type_spec_id
         match(TokenType::LEFT_PAREN)
         params
         match(TokenType::RIGHT_PAREN)
         compound_stmt
+        @func_dec = false
     end
 
     def type_spec_id
         type_spec
+        if @token.val == 'main' and !@var_dec
+            @main_defined = true
+        end
         match(TokenType::ID)
     end
 
