@@ -13,6 +13,7 @@ class Parser
         @main_defined = false
         @table = SymbolTable.new
         @current_func = ''
+        @scope_added = false
     end
 
     def parse
@@ -41,6 +42,8 @@ class Parser
 
             when TokenType::LEFT_PAREN # in function
                 match(TokenType::LEFT_PAREN)
+                @scope_added = true
+                add_scope
                 params
                 match(TokenType::RIGHT_PAREN)
                 compound_stmt
@@ -125,7 +128,9 @@ class Parser
 
     def compound_stmt
         match(TokenType::LEFT_BRACE)
-        add_scope # add a new scope everytime we see a {
+        # add a new scope everytime we see a { (except when in a function header)
+        add_scope if !@scope_added 
+        @scope_added = false
         local_dec
         stmt_list
         match(TokenType::RIGHT_BRACE)

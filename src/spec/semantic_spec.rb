@@ -107,6 +107,36 @@ RSpec.describe Parser do
       "
     end
 
+    let(:param_re_dec) do
+      "
+        void main(int a, int b) {
+            int a;
+            int c;
+            int d;
+        }
+      "
+    end
+
+    let(:param_re_dec1) do
+      "
+        void main(int a, int b) {
+            int b;
+            int c;
+            int d;
+        }
+      "
+    end
+
+    let(:global_var) do
+      "
+        int a;
+        void main(int b) {
+            a = 5;
+            return;
+        }
+      "
+    end
+
     let(:inputs) do
       [
         # [ TEST_NUMBER, TEST_CODE, EXPECTED_RESULT],
@@ -121,6 +151,9 @@ RSpec.describe Parser do
         [8  , re_declaration   , "REJECT" ],
         [9  , valid_re_dec     , "ACCEPT" ],
         [10 , invalid_re_dec   , "REJECT" ],
+        [11 , param_re_dec     , "REJECT" ],
+        [12 , param_re_dec1    , "REJECT" ],
+        [13 , global_var       , "ACCEPT" ],
       ]
     end
 

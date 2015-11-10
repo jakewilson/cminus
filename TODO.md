@@ -10,3 +10,4 @@ To do for semantics (not complete):
 - [ ] variables can only be assigned to expressions of the same type
 - [x] create new symbol table upon each '{'
 - [x] destroy current symbol table upon each '}'
+- [ ] check previous symbol tables if current id is not found in current scope
