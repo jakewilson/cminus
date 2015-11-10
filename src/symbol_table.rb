@@ -51,9 +51,11 @@ end
 
 class Symbol_
 
-    def initialize(name, type)
+    def initialize(name, type, is_func = false)
         @name = name
         @type = type
+        @is_func = is_func
+        @args = []
     end
 
     def name
@@ -64,8 +66,27 @@ class Symbol_
         @type
     end
 
+    def is_func
+        @is_func
+    end
+
+    def is_func=f
+        @is_func = f
+    end
+
+    def args
+        @args
+    end
+
+    def add_arg a
+        @args << a
+    end
+
     def to_s
-        return @name + ":" + @type
+        ret = @name + ":" + @type
+        ret += "\nfunction: " + @is_func.to_s if @is_func
+        ret += "\n" + "args: " + args.join(" ") if @is_func
+        return ret
     end
 
 end

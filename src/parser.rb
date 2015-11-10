@@ -14,6 +14,9 @@ class Parser
         @table = SymbolTable.new
         @current_func = ''
         @scope_added = false
+        @args = []
+        @params = false
+        @scope = 0
     end
 
     def parse
@@ -41,6 +44,7 @@ class Parser
                 match(TokenType::SEMICOLON)
 
             when TokenType::LEFT_PAREN # in function
+                @table.get(@current_func).is_func = true
                 match(TokenType::LEFT_PAREN)
                 @scope_added = true
                 add_scope
@@ -89,14 +93,28 @@ class Parser
         type_spec
         type = @token.val
         match(@token.type)
+
+        # ensure main is defined once
         if @token.val == 'main' and !@var_dec
             @main_defined = true
         end
-        if @table.get(@token.val) # attempted re-declaration
+
+        # attempted re-declaration
+        if @table.get(@token.val) 
             raise Reject
         end
+
         @table.add(@token.val, type)
+        puts "adding #{@token.val} to the table #{@scope}" if $debug
+
+        if @current_func != '' and @params
+            #puts @scope.to_s
+            @table.prev.get(@current_func).add_arg(Symbol_.new(@token.val, type))
+            puts "added arg " + @token.val + " to function " + @current_func if $debug
+        end
+
         @current_func = @token.val if !@var_dec
+
         match(TokenType::ID)
     end
 
@@ -109,11 +127,13 @@ class Parser
     end
 
     def param_list
+        @params = true
         param
         while (@token.type == TokenType::COMMA)
             match(TokenType::COMMA)
             param
         end
+        @params = false
     end
 
     def param
@@ -134,7 +154,11 @@ class Parser
         local_dec
         stmt_list
         match(TokenType::RIGHT_BRACE)
+        puts @scope.to_s if $debug
+        @table.print if $debug
         rem_scope
+        puts @scope.to_s if $debug
+        @table.print if $debug
     end
 
     def local_dec
@@ -311,10 +335,12 @@ class Parser
 
     def add_scope
         @table = @table.next = SymbolTable.new
+        @scope += 1
     end
 
     def rem_scope
         @table = @table.prev
+        @scope -= 1
     end
 
     def print_table
