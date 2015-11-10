@@ -137,6 +137,35 @@ RSpec.describe Parser do
       "
     end
 
+    let(:nested_blocks) do
+      "
+        void main(int a) {
+            {
+                int a;
+                {
+                    int a;
+                    {
+                        int a;
+                    }
+                }
+            }
+        }
+      "
+    end
+
+    let(:non_global) do
+      "
+        int a;
+        void main(int b) {
+            int c;
+            a = 5;
+            if (1) {
+                c = 6;
+                a = 7;
+            }
+        }
+      "
+    end
     let(:inputs) do
       [
         # [ TEST_NUMBER, TEST_CODE, EXPECTED_RESULT],
@@ -154,6 +183,7 @@ RSpec.describe Parser do
         [11 , param_re_dec     , "REJECT" ],
         [12 , param_re_dec1    , "REJECT" ],
         [13 , global_var       , "ACCEPT" ],
+        [14 , non_global       , "REJECT" ],
       ]
     end
 

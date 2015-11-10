@@ -14,8 +14,19 @@ class SymbolTable
         @table[id]
     end
 
+    def find id
+        table = self
+        return @table[id] if @table[id]
+        while table != nil and table.get(id) == nil
+            table = table.prev
+        end
+        return table.get(id) if table != nil
+        return nil
+    end
+
     def next=n
         @next = n
+        @next.prev = self
     end
 
     def next

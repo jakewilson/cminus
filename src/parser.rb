@@ -271,7 +271,7 @@ class Parser
             when TokenType::NUM, TokenType::FLOAT_NUM
                 match(TokenType::NUM)
             when TokenType::ID
-                raise Reject if @table.get(@token.val) == nil
+                raise Reject if @table.find(@token.val) == nil
                 match(TokenType::ID)
                 if @token.type == TokenType::LEFT_BRACKET
                     match(TokenType::LEFT_BRACKET)
@@ -310,9 +310,7 @@ class Parser
     end
 
     def add_scope
-        @table.next = SymbolTable.new
-        @table.next.prev = @table
-        @table = @table.next
+        @table = @table.next = SymbolTable.new
     end
 
     def rem_scope
