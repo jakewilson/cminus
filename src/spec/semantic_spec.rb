@@ -39,6 +39,7 @@ RSpec.describe Parser do
         int main(void) {
             int y;
             x = y + 5;
+            return 5;
         }
       "
     end
@@ -415,6 +416,81 @@ RSpec.describe Parser do
         "
     end
 
+    let (:func_call_valid) do
+        "
+            int a(int b, int c) {
+                return 56 * 8;
+            }
+
+            float main(float f) {
+                int x;
+                x = a(5, 87 * x);
+                return 56.8;
+            }
+        "
+    end
+
+    let (:func_call_invalid) do
+        "
+            int a(int b, int c) {
+                return 56 * 8;
+            }
+            float main(float a) {
+                int x;
+                float y;
+                x = a(5, 87 * y); // a is now a local variable
+                return 56.8;
+            }
+        "
+    end
+
+    let (:func_call_valid1) do
+        "
+            int a(int b, int c) {
+                return 56 * 8;
+            }
+
+            float b(void) {
+                int y;
+                float a;
+                return a + 17E-6;
+            }
+
+            float main(void) {
+                int x;
+                x = a(5, 87 * x);
+                return 56.8;
+            }
+        "
+    end
+
+    let (:no_return) do
+        "
+            int main(void) {
+                int x;
+                x = 5;
+            }
+        "
+    end
+
+    let (:weird_param) do
+        "
+            int a(int a) {
+                return 5;
+            }
+
+            void main(void) {}
+        "
+    end
+
+    let (:void_return) do
+        "
+            void main(void) {
+                return 5;
+            }
+        "
+    end
+
     let(:inputs) do
       [
         # [ TEST_NUMBER, TEST_CODE, EXPECTED_RESULT],
@@ -437,7 +513,7 @@ RSpec.describe Parser do
         [16 , valid_re_dec1    , "ACCEPT" ],
         [17 , many             , "ACCEPT" ],
         [18 , weird_global     , "ACCEPT" ],
-        [19 , valid_func_call  , "ACCEPT" ],
+        [19 , valid_func_call  , "REJECT" ],
         [20 , void_trick       , "REJECT" ],
         [21 , wrong_return     , "REJECT" ],
         [22 , right_return     , "ACCEPT" ],
@@ -453,6 +529,12 @@ RSpec.describe Parser do
         [32 , invalid_return   , "REJECT" ],
         [33 , invalid_return1  , "REJECT" ],
         [34 , valid_return     , "ACCEPT" ],
+        [35 , func_call_valid  , "ACCEPT" ],
+        [36 , func_call_invalid, "REJECT" ],
+        [37 , func_call_valid1 , "ACCEPT" ],
+        [38 , no_return        , "REJECT" ],
+        [39 , weird_param      , "ACCEPT" ],
+        [40 , void_return      , "REJECT" ],
       ]
     end
 

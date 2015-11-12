@@ -56,7 +56,7 @@ class Parser
                 match(TokenType::RIGHT_PAREN)
                 compound_stmt
                 
-            when TokenType::LEFT_BRACKET
+            when TokenType::LEFT_BRACKET # array
                 @main_defined = false if @main_defined
                 @current_func = ''
                 raise Reject if @was_void
@@ -75,7 +75,7 @@ class Parser
         type_spec_id
         if @token.type == TokenType::SEMICOLON
             match(TokenType::SEMICOLON)
-        else
+        else # array
             match(TokenType::LEFT_BRACKET)
             match(TokenType::NUM)
             match(TokenType::RIGHT_BRACKET)
@@ -324,14 +324,16 @@ class Parser
             when TokenType::ID
                 raise Reject if @table.find(@token.val) == nil
                 type = @table.find(@token.val).type
+                name = @token.val
                 match(TokenType::ID)
                 if @token.type == TokenType::LEFT_BRACKET
                     match(TokenType::LEFT_BRACKET)
                     check_type(exp, TokenType::INT)
                     match(TokenType::RIGHT_BRACKET)
                 elsif @token.type == TokenType::LEFT_PAREN
+                    raise Reject if !@table.find(name).is_func
                     match(TokenType::LEFT_PAREN)
-                    args # TODO must match types of all arguments
+                    args(name) # TODO must match types of all arguments
                     match(TokenType::RIGHT_PAREN) 
                 end
 
@@ -341,18 +343,26 @@ class Parser
         return type
     end
 
-    def args
+    def args name
         if $first["args-list"].index(@token.type)
-            args_list
+            args_list(name)
+        else
+            raise Reject if @table.find(name).args.length > 0
         end
     end
 
-    def args_list
-        exp
+    def args_list(name) # name is the function who we're calling
+        args = @table.find(name).args
+        len, num_args = args.length, 0
+        check_type(exp, args[num_args].type)
+        num_args += 1
         while @token.type == TokenType::COMMA
             match(TokenType::COMMA)
-            exp
+            check_type(exp, args[num_args].type)
+            num_args += 1
         end
+
+        raise Reject if len != num_args
     end
 
     def print_token(str)

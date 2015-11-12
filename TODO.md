@@ -1,8 +1,7 @@
 To do for semantics (not complete):
 - [x] no void variables
 - [x] return statements must match function return types
-- [ ] evaluate expressions in if and while statements
-- [ ] function calls must match function definitions in type and # of args
+- [x] function calls must match function definitions in type and # of args
 - [x] add symbol table
 - [x] variables must be declared before use
 - [x] multiple variables of the same name cannot be declared in the same scope

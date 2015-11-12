@@ -51,11 +51,12 @@ end
 
 class Symbol_
 
-    def initialize(name, type, is_func = false)
+    def initialize(name, type, is_func = false, is_array = false)
         @name = name
         @type = type
         @is_func = is_func
         @args = []
+        @is_array = is_array
     end
 
     def name
