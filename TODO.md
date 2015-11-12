@@ -1,13 +1,15 @@
 To do for semantics (not complete):
 - [x] no void variables
 - [ ] return statements must match function return types
+- [ ] evaluate expressions in if and while statements
 - [ ] function calls must match function definitions in type and # of args
 - [x] add symbol table
 - [x] variables must be declared before use
 - [x] multiple variables of the same name cannot be declared in the same scope
 - [x] each program must have one main function
-- [ ] evaluate expression types
-- [ ] variables can only be assigned to expressions of the same type
+- [x] evaluate expression types
+- [ ] evaluate expressions in if and while statements
+- [x] variables can only be assigned to expressions of the same type
 - [x] create new symbol table upon each '{'
 - [x] destroy current symbol table upon each '}'
 - [x] check previous symbol tables if current id is not found in current scope

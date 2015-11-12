@@ -253,6 +253,67 @@ RSpec.describe Parser do
         "
     end
 
+    let (:wrong_return) do
+        "
+            int b(void) {
+                return 1;
+            }
+
+            void main(void) {
+                float y;
+                y = b();
+            }
+        "
+    end
+
+
+    let (:right_return) do
+        "
+            float b(void) {
+                return 1.0;
+            }
+
+            void main(void) {
+                float y;
+                y = b();
+            }
+        "
+    end
+
+    let (:tricky_exp) do
+        "
+            void main(void) {
+                int x;
+                int y;
+                x = 5 + 7 / 8 * (9 + 16 * y);
+                return;
+            }
+        "
+    end
+
+    let (:tricky_exp_wrong) do
+        "
+            void main(void) {
+                int x;
+                float y;
+                x = 5 + 7 / 8 * (9 + 16 * y);
+                return;
+            }
+        "
+    end
+
+
+    let (:tricky_exp_wrong1) do
+        "
+            void main(void) {
+                int x;
+                float y;
+                x = 5 + 7 / 8 * (9 + 16 * 24.5);
+                return;
+            }
+        "
+    end
+
     let(:inputs) do
       [
         # [ TEST_NUMBER, TEST_CODE, EXPECTED_RESULT],
@@ -275,8 +336,13 @@ RSpec.describe Parser do
         [16 , valid_re_dec1    , "ACCEPT" ],
         [17 , many             , "ACCEPT" ],
         [18 , weird_global     , "ACCEPT" ],
-        [19 , valid_func_call  , "REJECT" ],
-        [20 , void_trick       , "REJECT" ],
+        [19 , valid_func_call  , "ACCEPT" ],
+        #[20 , void_trick       , "REJECT" ],
+        [21 , wrong_return     , "REJECT" ],
+        [22 , right_return     , "ACCEPT" ],
+        [23 , tricky_exp       , "ACCEPT" ],
+        [24 , tricky_exp_wrong , "REJECT" ],
+        [25 , tricky_exp_wrong1, "REJECT" ],
       ]
     end
 

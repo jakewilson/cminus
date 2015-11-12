@@ -235,7 +235,7 @@ class Parser
                 match(TokenType::ASSIGN)
                 check_type(exp, type)
             else
-                check_type(rotcaf, type)
+                check_type(rotcaf(type), type)
             end
         else
             type = simple_exp
@@ -245,20 +245,20 @@ class Parser
     end
 
     # start from factor and go backwards
-    def rotcaf
+    def rotcaf type
         while $first["mulop"].index(@token.type)
             match(@token.type)
-            factor
+            check_type(type, factor)
         end
         while $first["addop"].index(@token.type)
             match(@token.type)
-            term
+            check_type(type, term)
         end
         while $first["relop"].index(@token.type)
             match(@token.type)
-            add_exp
+            check_type(type, add_exp)
         end
-        # TODO check type
+        return type
     end
 
     def relop
@@ -271,7 +271,7 @@ class Parser
         type = add_exp
         while $first["relop"].index(@token.type)
             match(@token.type)
-            check_type(add_exp)
+            check_type(add_exp, type)
         end
 
         return type
@@ -281,7 +281,7 @@ class Parser
         type = term
         while $first["addop"].index(@token.type)
             match(@token.type)
-            check_type(term)
+            check_type(term, type)
         end
 
         return type
@@ -291,7 +291,7 @@ class Parser
         type = factor
         while $first["mulop"].index(@token.type)
             match(@token.type)
-            check_type(factor)
+            check_type(factor, type)
         end
 
         return type
@@ -302,7 +302,7 @@ class Parser
         case @token.type
             when TokenType::LEFT_PAREN
                 match(TokenType::LEFT_PAREN)
-                exp
+                type = exp
                 match(TokenType::RIGHT_PAREN)
 
             when TokenType::NUM
@@ -319,11 +319,11 @@ class Parser
                 match(TokenType::ID)
                 if @token.type == TokenType::LEFT_BRACKET
                     match(TokenType::LEFT_BRACKET)
-                    exp # TODO
+                    check_type(exp, TokenType::INT)
                     match(TokenType::RIGHT_BRACKET)
                 elsif @token.type == TokenType::LEFT_PAREN
                     match(TokenType::LEFT_PAREN)
-                    args # TODO
+                    args # TODO must match types of all arguments
                     match(TokenType::RIGHT_PAREN) 
                 end
 
