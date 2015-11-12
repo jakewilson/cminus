@@ -17,6 +17,7 @@ class Parser
         @args = []
         @params = false
         @scope = 0
+        @was_void = false
     end
 
     def parse
@@ -41,6 +42,8 @@ class Parser
             when TokenType::SEMICOLON
                 @main_defined = false if @main_defined
                 @current_func = ''
+                raise Reject if @was_void
+                @was_void = false
                 match(TokenType::SEMICOLON)
 
             when TokenType::LEFT_PAREN # in function
@@ -49,12 +52,15 @@ class Parser
                 @scope_added = true
                 add_scope
                 params
+                @was_void = false
                 match(TokenType::RIGHT_PAREN)
                 compound_stmt
                 
             when TokenType::LEFT_BRACKET
                 @main_defined = false if @main_defined
                 @current_func = ''
+                raise Reject if @was_void
+                @was_void = false
                 match(TokenType::LEFT_BRACKET)
                 match(TokenType::NUM)
                 match(TokenType::RIGHT_BRACKET)
@@ -82,6 +88,7 @@ class Parser
         case @token.val
             when 'void'
                 raise Reject if @var_dec
+                @was_void = true
             when 'int', 'float'
                 # accept
             else

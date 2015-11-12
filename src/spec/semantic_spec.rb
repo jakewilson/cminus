@@ -73,6 +73,15 @@ RSpec.describe Parser do
       "
     end
 
+    let(:void_param1) do
+      "
+        void hi(int a) {}
+        void main(void x, void y) {
+
+        }
+      "
+    end
+
     let(:re_declaration) do
       "
         void main(void) {
@@ -325,6 +334,18 @@ RSpec.describe Parser do
         "
     end
 
+
+    let (:valid_arr_idx1) do
+        "
+            void main(void) {
+                int x[6];
+                int y;
+                int z;
+                z = 5 + 7 * (8 / 16) - x[y];
+            }
+        "
+    end
+
     let (:invalid_arr_idx) do
         "
             void main(void) {
@@ -334,13 +355,23 @@ RSpec.describe Parser do
         "
     end
 
-
     let (:invalid_arr_idx1) do
         "
             void main(void) {
                 int x[6];
                 float y;
                 x[y] = 65;
+            }
+        "
+    end
+
+    let (:invalid_arr_idx2) do
+        "
+            void main(void) {
+                int x[6];
+                float y;
+                int z;
+                z = 5 + 7 * (8 / 16) - x[y];
             }
         "
     end
@@ -368,7 +399,7 @@ RSpec.describe Parser do
         [17 , many             , "ACCEPT" ],
         [18 , weird_global     , "ACCEPT" ],
         [19 , valid_func_call  , "ACCEPT" ],
-        #[20 , void_trick       , "REJECT" ],
+        [20 , void_trick       , "REJECT" ],
         [21 , wrong_return     , "REJECT" ],
         [22 , right_return     , "ACCEPT" ],
         [23 , tricky_exp       , "ACCEPT" ],
@@ -377,6 +408,9 @@ RSpec.describe Parser do
         [26 , valid_arr_idx    , "ACCEPT" ],
         [27 , invalid_arr_idx  , "REJECT" ],
         [28 , invalid_arr_idx1 , "REJECT" ],
+        [29 , valid_arr_idx1   , "ACCEPT" ],
+        [30 , invalid_arr_idx2 , "REJECT" ],
+        [31 , void_param1      , "REJECT" ],
       ]
     end
 
