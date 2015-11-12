@@ -13,5 +13,5 @@ To do for semantics (not complete):
 - [x] create new symbol table upon each '{'
 - [x] destroy current symbol table upon each '}'
 - [x] check previous symbol tables if current id is not found in current scope
-- [ ] array indices must be integers
+- [x] array indices must be integers
 - [ ] arrays must always have brackets after their use

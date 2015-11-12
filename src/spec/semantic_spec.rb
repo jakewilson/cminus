@@ -314,6 +314,37 @@ RSpec.describe Parser do
         "
     end
 
+    let (:valid_arr_idx) do
+        "
+            void main(void) {
+                int x[6];
+                int y;
+                x[0] = 65;
+                x[y] = 9;
+            }
+        "
+    end
+
+    let (:invalid_arr_idx) do
+        "
+            void main(void) {
+                int x[6];
+                x[4.3] = 65;
+            }
+        "
+    end
+
+
+    let (:invalid_arr_idx1) do
+        "
+            void main(void) {
+                int x[6];
+                float y;
+                x[y] = 65;
+            }
+        "
+    end
+
     let(:inputs) do
       [
         # [ TEST_NUMBER, TEST_CODE, EXPECTED_RESULT],
@@ -343,6 +374,9 @@ RSpec.describe Parser do
         [23 , tricky_exp       , "ACCEPT" ],
         [24 , tricky_exp_wrong , "REJECT" ],
         [25 , tricky_exp_wrong1, "REJECT" ],
+        [26 , valid_arr_idx    , "ACCEPT" ],
+        [27 , invalid_arr_idx  , "REJECT" ],
+        [28 , invalid_arr_idx1 , "REJECT" ],
       ]
     end
 
