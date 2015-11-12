@@ -83,7 +83,7 @@ class Symbol_
     end
 
     def to_s
-        ret = @name + ":" + @type
+        ret = @name + ":" + @type.to_s
         ret += "\nfunction: " + @is_func.to_s if @is_func
         ret += "\n" + "args: " + args.join(" ") if @is_func
         return ret

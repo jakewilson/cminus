@@ -91,7 +91,7 @@ class Parser
 
     def type_spec_id
         type_spec
-        type = @token.val
+        type = @token.type
         match(@token.type)
 
         # ensure main is defined once
@@ -227,17 +227,21 @@ class Parser
     end
 
     def exp
+        type = -1
         if @token.type == TokenType::ID
-            factor
+            type = factor
+            puts "type: #{type}" if $debug
             if @token.type == TokenType::ASSIGN
                 match(TokenType::ASSIGN)
-                exp
+                check_type(exp, type)
             else
-                rotcaf
+                check_type(rotcaf, type)
             end
         else
-            simple_exp
+            type = simple_exp
         end
+
+        return type
     end
 
     # start from factor and go backwards
@@ -254,6 +258,7 @@ class Parser
             match(@token.type)
             add_exp
         end
+        # TODO check type
     end
 
     def relop
@@ -263,52 +268,69 @@ class Parser
     end
 
     def simple_exp
-        add_exp
+        type = add_exp
         while $first["relop"].index(@token.type)
             match(@token.type)
-            add_exp
+            check_type(add_exp)
         end
+
+        return type
     end
 
     def add_exp
-        term
+        type = term
         while $first["addop"].index(@token.type)
             match(@token.type)
-            term
+            check_type(term)
         end
+
+        return type
     end
 
     def term
-        factor
+        type = factor
         while $first["mulop"].index(@token.type)
             match(@token.type)
-            factor
+            check_type(factor)
         end
+
+        return type
     end
 
     def factor
+        type = -1
         case @token.type
             when TokenType::LEFT_PAREN
                 match(TokenType::LEFT_PAREN)
                 exp
                 match(TokenType::RIGHT_PAREN)
-            when TokenType::NUM, TokenType::FLOAT_NUM
+
+            when TokenType::NUM
                 match(TokenType::NUM)
+                type = TokenType::INT
+
+            when TokenType::FLOAT_NUM
+                match(TokenType::FLOAT_NUM)
+                type = TokenType::FLOAT
+
             when TokenType::ID
                 raise Reject if @table.find(@token.val) == nil
+                type = @table.find(@token.val).type
                 match(TokenType::ID)
                 if @token.type == TokenType::LEFT_BRACKET
                     match(TokenType::LEFT_BRACKET)
-                    exp
+                    exp # TODO
                     match(TokenType::RIGHT_BRACKET)
                 elsif @token.type == TokenType::LEFT_PAREN
                     match(TokenType::LEFT_PAREN)
-                    args
+                    args # TODO
                     match(TokenType::RIGHT_PAREN) 
                 end
+
             else
                 raise Reject
         end
+        return type
     end
 
     def args
@@ -345,6 +367,12 @@ class Parser
 
     def print_table
         if $debug then @table.print end
+    end
+
+    # TODO may need to change this
+    def check_type actual, expected
+        puts "actual type: #{actual} expected: #{expected}" if $debug
+        raise Reject if actual != expected
     end
 
     ##

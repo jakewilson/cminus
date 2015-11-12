@@ -246,6 +246,13 @@ RSpec.describe Parser do
       "
     end
 
+    let (:void_trick) do
+        "
+            void x;
+            void main(void) {}
+        "
+    end
+
     let(:inputs) do
       [
         # [ TEST_NUMBER, TEST_CODE, EXPECTED_RESULT],
@@ -269,6 +276,7 @@ RSpec.describe Parser do
         [17 , many             , "ACCEPT" ],
         [18 , weird_global     , "ACCEPT" ],
         [19 , valid_func_call  , "REJECT" ],
+        [20 , void_trick       , "REJECT" ],
       ]
     end
 
