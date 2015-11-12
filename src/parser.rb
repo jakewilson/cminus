@@ -227,8 +227,9 @@ class Parser
         match(TokenType::RETURN)
         if @token.type == TokenType::SEMICOLON
             match(TokenType::SEMICOLON)
+            check_type(TokenType::VOID, @table.find(@current_func).type)
         else
-            exp
+            check_type(exp, @table.find(@current_func).type)
             match(TokenType::SEMICOLON)
         end
     end

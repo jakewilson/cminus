@@ -376,6 +376,45 @@ RSpec.describe Parser do
         "
     end
 
+    let (:invalid_return) do
+        "
+            void main(void) {
+                return 5;
+            }
+        "
+    end
+
+    let (:invalid_return1) do
+        "
+            int main(void) {
+                return;
+            }
+        "
+    end
+
+    let (:valid_return) do
+        "
+            float b(void) {
+                float x[14];
+                x[13] = 76.5E8;
+                x[7] = 56E-9;
+                return x[4];
+            }
+        
+            int c(void) {
+                return 76 * 321;
+            }
+
+            int main(void) {
+                float a;
+                int x;
+                a = b();
+                x = 5 + 78;
+                return c() * x + 5;;;
+            }
+        "
+    end
+
     let(:inputs) do
       [
         # [ TEST_NUMBER, TEST_CODE, EXPECTED_RESULT],
@@ -411,6 +450,9 @@ RSpec.describe Parser do
         [29 , valid_arr_idx1   , "ACCEPT" ],
         [30 , invalid_arr_idx2 , "REJECT" ],
         [31 , void_param1      , "REJECT" ],
+        [32 , invalid_return   , "REJECT" ],
+        [33 , invalid_return1  , "REJECT" ],
+        [34 , valid_return     , "ACCEPT" ],
       ]
     end
 

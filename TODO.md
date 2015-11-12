@@ -1,6 +1,6 @@
 To do for semantics (not complete):
 - [x] no void variables
-- [ ] return statements must match function return types
+- [x] return statements must match function return types
 - [ ] evaluate expressions in if and while statements
 - [ ] function calls must match function definitions in type and # of args
 - [x] add symbol table
@@ -8,7 +8,6 @@ To do for semantics (not complete):
 - [x] multiple variables of the same name cannot be declared in the same scope
 - [x] each program must have one main function
 - [x] evaluate expression types
-- [ ] evaluate expressions in if and while statements
 - [x] variables can only be assigned to expressions of the same type
 - [x] create new symbol table upon each '{'
 - [x] destroy current symbol table upon each '}'
