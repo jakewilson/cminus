@@ -18,6 +18,7 @@ class Parser
         @params = false
         @scope = 0
         @was_void = false
+        @return_seen = false
     end
 
     def parse
@@ -55,6 +56,11 @@ class Parser
                 @was_void = false
                 match(TokenType::RIGHT_PAREN)
                 compound_stmt
+                type = @table.find(@current_func).type 
+                if type != TokenType::VOID
+                    raise Reject if !@return_seen
+                end
+                @return_seen = false
                 
             when TokenType::LEFT_BRACKET # array
                 @main_defined = false if @main_defined
@@ -232,6 +238,7 @@ class Parser
             check_type(exp, @table.find(@current_func).type)
             match(TokenType::SEMICOLON)
         end
+        @return_seen = true
     end
 
     def exp

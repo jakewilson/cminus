@@ -14,7 +14,7 @@ RSpec.describe Parser do
     let(:function_decs) do
       "
         void f(int x) { }
-        int main(void) { }
+        int main(void) { return 5; }
       "
     end
 
@@ -39,7 +39,7 @@ RSpec.describe Parser do
         int main(void) {
             int y;
             x = y + 5;
-            return 5;
+            return y;
         }
       "
     end
@@ -491,6 +491,16 @@ RSpec.describe Parser do
         "
     end
 
+    let (:invalid_arr) do
+        "
+            void main(void) {
+                int x[54];
+                int y;
+                y = x + 5;
+            }
+        "
+    end
+
     let(:inputs) do
       [
         # [ TEST_NUMBER, TEST_CODE, EXPECTED_RESULT],
@@ -499,7 +509,7 @@ RSpec.describe Parser do
         [2  , no_main          , "REJECT" ],
         [3  , no_main_trick    , "REJECT" ],
         [4  , undeclared_var   , "REJECT" ],
-        [5  , declared_var     , "ACCEPT" ],
+        [5  , declared_var     , "REJECT" ],
         [6  , undeclared_var1  , "REJECT" ],
         [7  , void_param       , "REJECT" ],
         [8  , re_declaration   , "REJECT" ],
@@ -535,6 +545,7 @@ RSpec.describe Parser do
         [38 , no_return        , "REJECT" ],
         [39 , weird_param      , "ACCEPT" ],
         [40 , void_return      , "REJECT" ],
+        [41 , invalid_arr      , "REJECT" ],
       ]
     end
 
