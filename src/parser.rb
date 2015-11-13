@@ -67,6 +67,7 @@ class Parser
                 @current_func = ''
                 raise Reject if @was_void
                 @was_void = false
+                @table.get(@name).is_array = true
                 match(TokenType::LEFT_BRACKET)
                 match(TokenType::NUM)
                 match(TokenType::RIGHT_BRACKET)
@@ -82,6 +83,7 @@ class Parser
         if @token.type == TokenType::SEMICOLON
             match(TokenType::SEMICOLON)
         else # array
+            @table.get(@name).is_array = true
             match(TokenType::LEFT_BRACKET)
             match(TokenType::NUM)
             match(TokenType::RIGHT_BRACKET)
@@ -127,7 +129,7 @@ class Parser
         end
 
         @current_func = @token.val if !@var_dec
-
+        @name = @token.val
         match(TokenType::ID)
     end
 
@@ -332,8 +334,11 @@ class Parser
                 raise Reject if @table.find(@token.val) == nil
                 type = @table.find(@token.val).type
                 name = @token.val
+                bracket_seen = false
                 match(TokenType::ID)
                 if @token.type == TokenType::LEFT_BRACKET
+                    bracket_seen = true
+                    raise Reject if !@table.find(name).is_array
                     match(TokenType::LEFT_BRACKET)
                     check_type(exp, TokenType::INT)
                     match(TokenType::RIGHT_BRACKET)
@@ -344,6 +349,7 @@ class Parser
                     match(TokenType::RIGHT_PAREN) 
                 end
 
+                raise Reject if @table.find(name).is_array and !bracket_seen
             else
                 raise Reject
         end

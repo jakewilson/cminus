@@ -12,4 +12,4 @@ To do for semantics (not complete):
 - [x] destroy current symbol table upon each '}'
 - [x] check previous symbol tables if current id is not found in current scope
 - [x] array indices must be integers
-- [ ] arrays must always have brackets after their use
+- [x] arrays must always have brackets after their use

@@ -83,6 +83,14 @@ class Symbol_
         @args << a
     end
 
+    def is_array
+        @is_array
+    end
+
+    def is_array=a
+        @is_array = a
+    end
+
     def to_s
         ret = @name + ":" + @type.to_s
         ret += "\nfunction: " + @is_func.to_s if @is_func

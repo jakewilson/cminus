@@ -501,6 +501,15 @@ RSpec.describe Parser do
         "
     end
 
+    let (:invalid_arr1) do
+        "
+            void main(void) {
+                int x;
+                return x[5];
+            }
+        "
+    end
+
     let(:inputs) do
       [
         # [ TEST_NUMBER, TEST_CODE, EXPECTED_RESULT],
@@ -546,6 +555,7 @@ RSpec.describe Parser do
         [39 , weird_param      , "ACCEPT" ],
         [40 , void_return      , "REJECT" ],
         [41 , invalid_arr      , "REJECT" ],
+        [42 , invalid_arr1     , "REJECT" ],
       ]
     end
 
